@@ -1,0 +1,4 @@
+sensor_msgs/PointCloud2 cloud_input
+---
+sensor_msgs/PointCloud2 door_points
+
