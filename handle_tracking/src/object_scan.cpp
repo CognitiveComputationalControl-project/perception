@@ -7,11 +7,11 @@ Handle_manager::Handle_manager()
 	
 	
 }
+double x_left = 1000;
+static geometry_msgs::Pose grasp_pose;
 
 void Handle_manager::grasp_point_callback(const geometry_msgs::Pose::ConstPtr& msg)
 {
-
-
     ROS_INFO("Recieved grasp point");
     ///////// marker for handle
     visualization_msgs::Marker marker_handle; 
@@ -45,6 +45,24 @@ void Handle_manager::grasp_point_callback(const geometry_msgs::Pose::ConstPtr& m
     handletarget_pub.publish(marker_handle);
 }
 
+void Handle_manager::marker_array_callback(const visualization_msgs::MarkerArray::ConstPtr& msg)
+{
+for (int i = 0 ; i < msg->markers.size(); i++)
+    {
+/*    	        	std::cout << x_left;
+*/
+       // geometry_msgs::Vector3Stamped gV, tV;
+      if ( (x_left > msg->markers[i].pose.position.x) /*&& abs(msg->markers[i].pose.position.y)< 0.2*/)
+        { 
+        	std::cout << "assignment";
+          x_left = msg->markers[i].pose.position.x;
+          grasp_pose.position.y=msg->markers[i].pose.position.y;
+          grasp_pose.position.z=msg->markers[i].pose.position.z;
+          grasp_pose.position.x=msg->markers[i].pose.position.x;
+		}
+	}
+grasp_pub.publish(grasp_pose);
+}
 
 void Handle_manager::global_pose_callback(const geometry_msgs::PoseStamped::ConstPtr& msg)
 {

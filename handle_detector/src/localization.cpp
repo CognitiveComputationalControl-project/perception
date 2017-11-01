@@ -209,8 +209,8 @@ int main(int argc, char** argv)
   handle_detector::HandleListMsg handle_list_msg;
 /*  typedef pcl::PointCloud<pcl::PointXYZ> PCLCloud;
   PCLCloud point_handle;*/
-  ros::Publisher graspub    = node.advertise<geometry_msgs::Pose> ("/handle_detector/grasp_point", 5);//////////////////////////////////////////////////////////////////
-  ros::Publisher target_pub =node.advertise<visualization_msgs::Marker>("/handle_target", 10);
+/*  ros::Publisher graspub    = node.advertise<geometry_msgs::Pose> ("/handle_detector/grasp_point", 5);//////////////////////////////////////////////////////////////////
+*/  ros::Publisher target_pub =node.advertise<visualization_msgs::Marker>("/handle_target", 10);
 
   // how often things are published
   ros::Rate rate(10);

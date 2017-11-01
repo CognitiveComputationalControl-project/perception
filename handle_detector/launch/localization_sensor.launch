@@ -21,7 +21,7 @@
 				
 		<!-- workspace limits -->
 		<param name="max_range" value="0.9" />
-    <param name="workspace_min_x" value="0.4" />
+   		<param name="workspace_min_x" value="-1.4" />
 		<param name="workspace_max_x" value="2.5" />
 		<param name="workspace_min_y" value="-0.9" />
 		<param name="workspace_max_y" value="0.9" />

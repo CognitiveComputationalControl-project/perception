@@ -68,12 +68,14 @@ public:
 	Handle_manager(int numofhuman);
 	~Handle_manager();
 
-
+/*
 	ros::Publisher Gaze_point_pub;
 	ros::Publisher Gaze_activate_pub;
-	ros::Publisher setNavTarget_pub;
+	ros::Publisher setNavTarget_pub;*/
     ros::Publisher handletarget_pub;
-	
+	ros::Subscriber Detected_handle_sub;
+	ros::Subscriber Marker_array_sub;
+	ros::Publisher grasp_pub;
 	int index;
 	tf::TransformListener 	  listener;
 
@@ -91,7 +93,7 @@ public:
 	void laser_scan_callback(const sensor_msgs::LaserScan::ConstPtr& msg);
 	void keyboard_callback(const keyboard::Key::ConstPtr& msg);
     void grasp_point_callback(const geometry_msgs::Pose::ConstPtr& msg);
-	
+	void marker_array_callback(const visualization_msgs::MarkerArray::ConstPtr& msg);
 	
 	void getCameraregion();
 	bool getlinevalue(int line_type,double input_x, double input_y);
