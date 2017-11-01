@@ -36,12 +36,15 @@ Affordances g_affordances;
 std::vector<CylindricalShell> g_cylindrical_shells;
 std::vector<std::vector<CylindricalShell> > g_handles;
 tf::StampedTransform g_transform;
+    geometry_msgs::Pose msg;
+    geometry_msgs::Pose msg_trans;
 
 // synchronization
 double g_prev_time;
 double g_update_interval;
 bool g_has_read = false;
 double x_max = 10000;
+int ite = 0;
 void chatterCallback(const sensor_msgs::PointCloud2ConstPtr& input)
 {
   if (omp_get_wtime() - g_prev_time < g_update_interval)
@@ -197,7 +200,7 @@ ros  ::init(argc, argv, "localization");
   handle_detector::HandleListMsg handle_list_msg;
 /*  typedef pcl::PointCloud<pcl::PointXYZ> PCLCloud;
   PCLCloud point_handle;*/
-  ros::Publisher graspub = node.advertise<geometry_msgs::Pose> ("grasp_point", 100);//////////////////////////////////////////////////////////////////////////////////////////////////
+  ros::Publisher graspub = node.advertise<geometry_msgs::Pose> ("grasp_point", 5);//////////////////////////////////////////////////////////////////////////////////////////////////
   // how often things are published
   ros::Rate rate(10);
 
@@ -268,19 +271,31 @@ ros  ::init(argc, argv, "localization");
 
     ros::spinOnce();
     rate.sleep();
-/*    for (int i = 0 ; i < marker_array_msg_handles.size(); i++)
+    msg_trans = msg;
+    for (int i = 0 ; i < marker_array_msg_handles.markers.size(); i++)
     {
-      grasp_point
-      if ( x_max > marker_array_msg_handles[i].pose.position.x)
+      if ( x_max > marker_array_msg_handles.markers[i].pose.position.x)
         { 
-          x_max = marker_array_msg_handles[i].pose.position.x;
-          pt.x = marker_array_msg_handles[i].pose.position.x;
-          pt.y = marker_array_msg_handles[i].pose.position.y;
-          pt.z = marker_array_msg_handles[i].pose.position.z;
-          point_handle.push_back(pt);
+          x_max = marker_array_msg_handles.markers[i].pose.position.x;
+          msg.position.x = marker_array_msg_handles.markers[i].pose.position.x;
+          msg.position.y = marker_array_msg_handles.markers[i].pose.position.y;
+          msg.position.z = marker_array_msg_handles.markers[i].pose.position.z;
         }
-    }*/
-  }
 
+    }
+/*    if (msg_trans.position.x == msg.position.x)
+    {ite=ite+1;
+      if (ite>10)
+        {break;}
+    }*/
+    graspub.publish(msg);
+  }
+  std::cout << "switching to publishing pose only"<<std::endl;
+
+  while (ros::ok())
+  {
+      graspub.publish(msg);
+      ros::spinOnce();
+  }
   return 0;
 }
