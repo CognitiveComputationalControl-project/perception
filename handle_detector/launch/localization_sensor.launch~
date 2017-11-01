@@ -13,7 +13,7 @@
 		<param name="update_interval" value="600.0" />
 		
 		<!-- alignment parameters -->
-		<param name="alignment_runs" value="5" />
+		<param name="alignment_runs" value="10" />
 		<param name="alignment_min_inliers" value="8" />
 		<param name="alignment_dist_radius" value="0.02" />
 		<param name="alignment_orient_radius" value="0.4" />
