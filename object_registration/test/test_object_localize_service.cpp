@@ -79,7 +79,7 @@ bool call_localize_object_service(PointCloudT::Ptr object_in, PointCloudT::Ptr s
         PointCloudT::Ptr object_transformed (new PointCloudT);    
         pcl::transformPointCloud (*object_in, *object_transformed, SE3_transform);
         pcl::toROSMsg(*object_transformed, object_transformed_cloud_msg);
-        object_transformed_cloud_msg.header.frame_id = "world"; 
+        object_transformed_cloud_msg.header.frame_id = "map"; 
         // convert position to translation
         // convert quaternion to 3x3 rotation matrix
 
