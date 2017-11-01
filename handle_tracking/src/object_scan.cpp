@@ -8,58 +8,175 @@ Handle_manager::Handle_manager()
 	
 }
 
+void Handle_manager::Publish_visualized_marker_first(const geometry_msgs::PoseStamped Pose)
+{
+
+
+    visualization_msgs::Marker visual_marker; 
+    visual_marker.header.frame_id = Pose.header.frame_id; 
+    visual_marker.header.stamp = ros::Time::now();
+    visual_marker.id = 0;
+    uint32_t shape = visualization_msgs::Marker::SPHERE;
+    visual_marker.type = shape;
+
+    visual_marker.pose.position.x = Pose.pose.position.x;
+    visual_marker.pose.position.y = Pose.pose.position.y;
+    visual_marker.pose.position.z = Pose.pose.position.z;
+
+    visual_marker.pose.orientation.x = 0.0;
+    visual_marker.pose.orientation.y = 0.0;
+    visual_marker.pose.orientation.z = 0.0;
+    visual_marker.pose.orientation.w = 1.0;
+
+    double temp_dist=0.2;
+
+    //ROS_INFO("temp dist : %.3lf, temp dist2 : %.3lf, temp dist3 : %.3lf",temp_dist,temp_dist2,temp_dist3);
+    visual_marker.scale.x = std::abs(temp_dist);
+    visual_marker.scale.y = std::abs(temp_dist);
+    visual_marker.scale.z = std::abs(temp_dist);
+
+    visual_marker.color.r = 0.7;
+    visual_marker.color.g = 0.4;
+    visual_marker.color.b = 0.2;
+    visual_marker.color.a = 0.85;
+
+    handlemiddletarget_pub.publish(visual_marker);
+
+
+}
+
+void Handle_manager::Publish_visualized_marker(const geometry_msgs::PoseStamped Pose)
+{
+
+    visualization_msgs::Marker visual_marker; 
+    visual_marker.header.frame_id = Pose.header.frame_id; 
+    visual_marker.header.stamp = ros::Time::now();
+    visual_marker.id = 0;
+    uint32_t shape = visualization_msgs::Marker::SPHERE;
+    visual_marker.type = shape;
+
+    visual_marker.pose.position.x = Pose.pose.position.x;
+    visual_marker.pose.position.y = Pose.pose.position.y;
+    visual_marker.pose.position.z = Pose.pose.position.z;
+
+    visual_marker.pose.orientation.x = 0.0;
+    visual_marker.pose.orientation.y = 0.0;
+    visual_marker.pose.orientation.z = 0.0;
+    visual_marker.pose.orientation.w = 1.0;
+
+    double temp_dist=0.2;
+
+    //ROS_INFO("temp dist : %.3lf, temp dist2 : %.3lf, temp dist3 : %.3lf",temp_dist,temp_dist2,temp_dist3);
+    visual_marker.scale.x = std::abs(temp_dist);
+    visual_marker.scale.y = std::abs(temp_dist);
+    visual_marker.scale.z = std::abs(temp_dist);
+
+    visual_marker.color.r = 0.0;
+    visual_marker.color.g = 0.7;
+    visual_marker.color.b = 0.2;
+    visual_marker.color.a = 0.85;
+
+    handletarget_pub.publish(visual_marker);
+
+}
 
 void Handle_manager::grasp_point_callback(const geometry_msgs::PoseStamped::ConstPtr& msg)
 {
-    ROS_INFO("Recieved grasp point");
-    ///////// marker for handle
-    visualization_msgs::Marker marker_handle; 
-    marker_handle.header.frame_id = "base_link"; 
-    marker_handle.header.stamp = ros::Time::now();
-    marker_handle.id = 0;
-    uint32_t shape = visualization_msgs::Marker::SPHERE;
-    marker_handle.type = shape;
+    // ROS_INFO("Recieved grasp point");
+    // ///////// marker for handle
+    // visualization_msgs::Marker visual_marker; 
+    // visual_marker.header.frame_id = "base_link"; 
+    // visual_marker.header.stamp = ros::Time::now();
+    // visual_marker.id = 0;
+    // uint32_t shape = visualization_msgs::Marker::SPHERE;
+    // visual_marker.type = shape;
 
-    marker_handle.pose.position.x = msg->pose.position.x;
-    marker_handle.pose.position.y = msg->pose.position.y;
-    marker_handle.pose.position.z = msg->pose.position.z;
+    // visual_marker.pose.position.x = msg->pose.position.x;
+    // visual_marker.pose.position.y = msg->pose.position.y;
+    // visual_marker.pose.position.z = msg->pose.position.z;
 
-    marker_handle.pose.orientation.x = 0.0;
-    marker_handle.pose.orientation.y = 0.0;
-    marker_handle.pose.orientation.z = 0.0;
-    marker_handle.pose.orientation.w = 1.0;
+    // visual_marker.pose.orientation.x = 0.0;
+    // visual_marker.pose.orientation.y = 0.0;
+    // visual_marker.pose.orientation.z = 0.0;
+    // visual_marker.pose.orientation.w = 1.0;
 
-    double temp_dist=0.5;
+    // double temp_dist=0.5;
 
-    //ROS_INFO("temp dist : %.3lf, temp dist2 : %.3lf, temp dist3 : %.3lf",temp_dist,temp_dist2,temp_dist3);
-    marker_handle.scale.x = std::abs(temp_dist);
-    marker_handle.scale.y = std::abs(temp_dist);
-    marker_handle.scale.z = std::abs(temp_dist);
+    // //ROS_INFO("temp dist : %.3lf, temp dist2 : %.3lf, temp dist3 : %.3lf",temp_dist,temp_dist2,temp_dist3);
+    // visual_marker.scale.x = std::abs(temp_dist);
+    // visual_marker.scale.y = std::abs(temp_dist);
+    // visual_marker.scale.z = std::abs(temp_dist);
 
-    marker_handle.color.r = 0.0;
-    marker_handle.color.g = 0.7;
-    marker_handle.color.b = 0.2;
-    marker_handle.color.a = 0.85;
+    // visual_marker.color.r = 0.0;
+    // visual_marker.color.g = 0.7;
+    // visual_marker.color.b = 0.2;
+    // visual_marker.color.a = 0.85;
 
-    handletarget_pub.publish(marker_handle);
+    // handletarget_pub.publish(visual_marker);
 }
 
 void Handle_manager::marker_array_callback(const visualization_msgs::MarkerArray::ConstPtr& msg)
 {
+
 for (int i = 0 ; i < msg->markers.size(); i++)
     {
 
       if ( (x_left > msg->markers[i].pose.position.x) /*&& abs(msg->markers[i].pose.position.y)< 0.2*/)
         { 
-        	std::cout << "assignment";
+          // td::cout << "assignment";
           x_left = msg->markers[i].pose.position.x;
+          grasp_pose.pose.position.x=msg->markers[i].pose.position.x;
           grasp_pose.pose.position.y=msg->markers[i].pose.position.y;
           grasp_pose.pose.position.z=msg->markers[i].pose.position.z;
-          grasp_pose.pose.position.x=msg->markers[i].pose.position.x;
+          
 		}
 	}
-	grasp_pose.header.frame_id = "/hsrb/head_rgbd_sensor/depth_registered/rectified_points";
-	grasp_pub.publish(grasp_pose);
+	
+	grasp_pose.header.stamp = ros::Time::now();
+	grasp_pose.header.frame_id = "head_rgbd_sensor_rgb_frame";
+
+	Publish_visualized_marker_first(grasp_pose);
+
+
+
+	geometry_msgs::Vector3Stamped gV, tV;
+	listener.waitForTransform("head_rgbd_sensor_rgb_frame", "base_link", ros::Time(0), ros::Duration(1.0));
+	gV.header.stamp = ros::Time();
+	gV.header.frame_id = "/head_rgbd_sensor_rgb_frame";
+
+	gV.vector.x = grasp_pose.pose.position.x;
+	gV.vector.y = grasp_pose.pose.position.y;
+	gV.vector.z = grasp_pose.pose.position.z;
+
+	//transform
+	tf::StampedTransform transform_sensor_base;
+	listener.waitForTransform("head_rgbd_sensor_rgb_frame", "base_link", ros::Time(0), ros::Duration(1.0));
+	try{ 
+	listener.lookupTransform("/head_rgbd_sensor_rgb_frame", "base_link",ros::Time(0), transform_sensor_base);
+	}
+	catch (tf::TransformException &ex){
+		
+	}
+	double offset_x = transform_sensor_base.getOrigin().x() ;        
+	double offset_y = transform_sensor_base.getOrigin().y() ;        
+	double offset_z = transform_sensor_base.getOrigin().z() ;       
+
+	ROS_INFO("offset_x : %.3lf, offset_y : %.3lf, offset_z : %.3lf \n ", offset_x, offset_y, offset_z) ;
+
+	listener.transformVector(std::string("/base_link"), gV, tV);
+	
+	grasp_transformed_pose.header.stamp=ros::Time::now();
+	grasp_transformed_pose.header.frame_id="/base_link";
+	grasp_transformed_pose.pose.position.x = tV.vector.x-offset_z;
+	grasp_transformed_pose.pose.position.y = tV.vector.y+offset_x;
+	grasp_transformed_pose.pose.position.z = tV.vector.z+offset_y;
+
+
+
+	Publish_visualized_marker(grasp_transformed_pose);
+    // graspub.publish(msg);
+
+	grasp_pub.publish(grasp_transformed_pose);
 }
 
 void Handle_manager::global_pose_callback(const geometry_msgs::PoseStamped::ConstPtr& msg)
@@ -103,61 +220,6 @@ void Handle_manager::joint_states_callback(const sensor_msgs::JointState::ConstP
 
 void Handle_manager::Human_MarkerarrayCallback(const visualization_msgs::MarkerArray::ConstPtr& msg)
 {
-
-	// if(IsHeadMoving)
-	// {
-	// 	std::cout<<"head is moving so return function"<<std::endl;
-	// 		return;
-	// }
-	
-	// //Human marker from yolo detection
-	// human_occupied_idx.clear();
-	// Cur_detected_human.clear();
-	
-
-	// num_of_detected_human=msg->markers.size();
-
-	// if(num_of_detected_human>0)
-	// 	Cur_detected_human.resize(num_of_detected_human);
-	// else
-	// {
-	// 	return;
-
-	// }
-	// // ROS_INFO("number of detected human : %d",num_of_detected_human);
-	
-	
-	// for(int i(0);i<num_of_detected_human;i++)
-	// {
-	// 	geometry_msgs::Vector3Stamped gV, tV;
-
-	//     gV.vector.x = msg->markers[i].pose.position.x;
-	//     gV.vector.y = msg->markers[i].pose.position.y;
-	//     gV.vector.z = msg->markers[i].pose.position.z;
-
-	//     // std::cout<<"x :"<<_x<<"_y:"<<_y<<"_z:"<<_z<<std::endl;
-	//     tf::StampedTransform maptransform;
- //   		listener.waitForTransform("head_rgbd_sensor_rgb_frame", "map", ros::Time(0), ros::Duration(5.0));
- //   		listener.lookupTransform("head_rgbd_sensor_rgb_frame", "map", ros::Time(0), maptransform);
-	    
-	//     gV.header.stamp = ros::Time();
-	//     gV.header.frame_id = "/head_rgbd_sensor_rgb_frame";
-	//     listener.transformVector(std::string("/map"), gV, tV);
-	    	    
-	// 	Cur_detected_human[i].resize(2,0.0);
-	// 	// Cur_detected_human[i][0]=msg->markers[i].pose.position.x;;
-	// 	// Cur_detected_human[i][1]=msg->markers[i].pose.position.y;
-	// 	//MKMKMKMK 0624
-	// 	Cur_detected_human[i][0]=tV.vector.x+global_pose[0];
-	// 	Cur_detected_human[i][1]=tV.vector.y+global_pose[1];
-	// 	int human_mapidx=CoordinateTransform_Global2_beliefMap(Cur_detected_human[i][0],Cur_detected_human[i][1]);
-	// 	human_occupied_idx.push_back(human_mapidx);
-	// 	// std::cout<<"human index : "<<human_mapidx<<std::endl;
-	// 	//ROS_INFO("Human idx : %d, Received position x : %.3lf, y : %.3lf",i, msg->markers[i].pose.position.x,msg->markers[i].pose.position.y);
-	// }
-
-	// put_human_occ_map_yolo();
-	
 
 }
 

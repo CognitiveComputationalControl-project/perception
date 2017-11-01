@@ -73,6 +73,7 @@ public:
 	ros::Publisher Gaze_activate_pub;
 	ros::Publisher setNavTarget_pub;*/
     ros::Publisher handletarget_pub;
+    ros::Publisher handlemiddletarget_pub;
 	ros::Publisher grasp_pub;
 	int index;
 	tf::TransformListener 	  listener;
@@ -82,6 +83,7 @@ public:
 	std::vector<double> global_pose;
 	double x_left;
 	geometry_msgs::PoseStamped grasp_pose;
+	geometry_msgs::PoseStamped grasp_transformed_pose;
 	visualization_msgs::MarkerArray human_boxes_array;
 	bool OnceTargeted;
 
@@ -94,6 +96,8 @@ public:
     void grasp_point_callback(const geometry_msgs::PoseStamped::ConstPtr& msg);
 	void marker_array_callback(const visualization_msgs::MarkerArray::ConstPtr& msg);
 	
+	void Publish_visualized_marker_first(const geometry_msgs::PoseStamped Pose);
+	void Publish_visualized_marker(const geometry_msgs::PoseStamped Pose);
 	void getCameraregion();
 	bool getlinevalue(int line_type,double input_x, double input_y);
 	// void setViewpointTarget(const std::vector<double> pos);

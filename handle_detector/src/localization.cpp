@@ -271,7 +271,7 @@ int main(int argc, char** argv)
     // publish handles as ROS topic
     handles_pub.publish(handle_list_msg);
 
-    ROS_INFO("handle list published");
+    // ROS_INFO("handle list published");
     //~ ROS_INFO("published %i grasp affordances for grasping", (int) cylinder_list_msg.cylinders.size());
     //~ ROS_INFO("published %i handles for grasping", (int) handle_list_msg.handles.size());
     //~ for(int i=0; i < handle_list_msg.handles.size(); i++)

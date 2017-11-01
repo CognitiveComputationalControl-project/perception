@@ -42,7 +42,8 @@ int main(int argc, char **argv)
   ros::Subscriber Marker_array_sub;
 
   ros::NodeHandle n;
-  object_tracker.handletarget_pub=n.advertise<visualization_msgs::Marker>("/detected_handle_marker",50,true);
+  object_tracker.handletarget_pub=n.advertise<visualization_msgs::Marker>("/detected_final_handle_marker",50,true);
+  object_tracker.handlemiddletarget_pub=n.advertise<visualization_msgs::Marker>("/detected_middle_handle_marker",50,true);
   object_tracker.grasp_pub = n.advertise<geometry_msgs::PoseStamped> ("handle_detector/grasp_point", 10,true);
   // object_tracker.Gaze_point_pub= n.advertise<geometry_msgs::Point>("/gazed_point_fixing_node/target_point", 50, true);
   // object_tracker.Gaze_activate_pub= n.advertise<std_msgs::Bool>("/gazed_point_fixing_node/activate", 50, true);
