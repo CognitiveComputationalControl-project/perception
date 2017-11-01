@@ -23,10 +23,12 @@
 #include <vector>
 #include "handle_detector/visualizer.h"
 #include "geometry_msgs/Pose.h"
+#include <visualization_msgs/Marker.h>
+#include <visualization_msgs/MarkerArray.h>
 #define EIGEN_DONT_PARALLELIZE
 
 typedef pcl::PointCloud<pcl::PointXYZ> PointCloud;
-const std::string BASE_FRAME = "odom";
+const std::string BASE_FRAME = "base_link";
 const std::string RANGE_SENSOR_FRAME = "head_rgbd_sensor_rgb_frame";
 const std::string RANGE_SENSOR_TOPIC = "/hsrb/head_rgbd_sensor/depth_registered/rectified_points";
 
@@ -36,8 +38,15 @@ Affordances g_affordances;
 std::vector<CylindricalShell> g_cylindrical_shells;
 std::vector<std::vector<CylindricalShell> > g_handles;
 tf::StampedTransform g_transform;
-    geometry_msgs::Pose msg;
-    geometry_msgs::Pose msg_trans;
+static geometry_msgs::Pose msg;
+geometry_msgs::Pose msg_trans;
+
+visualization_msgs::Marker marker_handle;
+double msg_x=0.0;
+double msg_y=0.0;
+double msg_z=0.0;
+
+// visualization_msgs::MarkerArray marker_handle;
 
 // synchronization
 double g_prev_time;
@@ -113,7 +122,7 @@ int main(int argc, char** argv)
   srand (time(NULL));
 
   // initialize ROS
-ros  ::init(argc, argv, "localization");
+  ros  ::init(argc, argv, "localization");
   ros::NodeHandle node("~");
 
   // set point cloud source from launch file
@@ -166,7 +175,7 @@ ros  ::init(argc, argv, "localization");
   {
     // wait for and then lookup transform between camera frame and base frame
     tf::TransformListener transform_listener;
-    transform_listener.waitForTransform(RANGE_SENSOR_FRAME, BASE_FRAME, ros::Time(0), ros::Duration(3));
+    transform_listener.waitForTransform(BASE_FRAME, RANGE_SENSOR_FRAME,ros::Time(0), ros::Duration(3));
     transform_listener.lookupTransform(BASE_FRAME, RANGE_SENSOR_FRAME, ros::Time(0), g_transform);
 
     // create subscriber for camera topic
@@ -200,14 +209,16 @@ ros  ::init(argc, argv, "localization");
   handle_detector::HandleListMsg handle_list_msg;
 /*  typedef pcl::PointCloud<pcl::PointXYZ> PCLCloud;
   PCLCloud point_handle;*/
-  ros::Publisher graspub = node.advertise<geometry_msgs::Pose> ("/handle_detector/grasp_point", 5);//////////////////////////////////////////////////////////////////////////////////////////////////
+  ros::Publisher graspub    = node.advertise<geometry_msgs::Pose> ("/handle_detector/grasp_point", 5);//////////////////////////////////////////////////////////////////
+  ros::Publisher target_pub =node.advertise<visualization_msgs::Marker>("/handle_target", 10);
+
   // how often things are published
   ros::Rate rate(10);
 
   double prev_time = omp_get_wtime();
 
-  while (ros::ok())
-  {
+   while (ros::ok())
+   {
     if (g_has_read)
     {
       // create visual point cloud
@@ -260,6 +271,7 @@ ros  ::init(argc, argv, "localization");
     // publish handles as ROS topic
     handles_pub.publish(handle_list_msg);
 
+    ROS_INFO("handle list published");
     //~ ROS_INFO("published %i grasp affordances for grasping", (int) cylinder_list_msg.cylinders.size());
     //~ ROS_INFO("published %i handles for grasping", (int) handle_list_msg.handles.size());
     //~ for(int i=0; i < handle_list_msg.handles.size(); i++)
@@ -269,63 +281,112 @@ ros  ::init(argc, argv, "localization");
     //~ for(int i=0; i < marker_arrays.size(); i++)
     //~ std::cout<<" - visual handle "<<i<<": "<<marker_arrays[i].markers.size()<<std::endl;
 
-    ros::spinOnce();
-    rate.sleep();
-    msg_trans = msg;
-     tf::TransformListener listener;
-     tf::TransformListener listener2;
-
+ 
+    // tf::TransformListener listener;
+    // tf::TransformListener listener2;
+/*
     for (int i = 0 ; i < marker_array_msg_handles.markers.size(); i++)
     {
-       geometry_msgs::Vector3Stamped gV, tV;
-      if ( x_max > marker_array_msg_handles.markers[i].pose.position.x && abs(marker_array_msg_handles.markers[i].pose.position.y)<0.1 )
+       // geometry_msgs::Vector3Stamped gV, tV;
+      if ( (x_max > marker_array_msg_handles.markers[i].pose.position.x) && abs(marker_array_msg_handles.markers[i].pose.position.y)< 0.2)
         { 
-          std::cout << " HERE IS ONE VALUE YOU SHOULD BE LOOKING AT MATHAFUCKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"<<std::endl;
+
+          std::cout << " HERE IS ONE VALUE YOU SHOULD BE LOOKING AT MATHAFUCKAAAAAAAAAAAAAAAAAAA"<<std::endl;
           x_max = marker_array_msg_handles.markers[i].pose.position.x;
-          gV.vector.x = marker_array_msg_handles.markers[i].pose.position.x;
-          gV.vector.y = marker_array_msg_handles.markers[i].pose.position.y;
-          gV.vector.z = marker_array_msg_handles.markers[i].pose.position.z;
+          
+          msg.position.x=marker_array_msg_handles.markers[i].pose.position.x;
+          msg.position.y=marker_array_msg_handles.markers[i].pose.position.y;
+          msg.position.z=marker_array_msg_handles.markers[i].pose.position.z;
 
-          tf::StampedTransform maptransform;
-          listener.waitForTransform("head_rgbd_sensor_rgb_frame", BASE_FRAME, ros::Time(0), ros::Duration(1.0));
-                  
-          gV.header.stamp = ros::Time();
-          gV.header.frame_id = "/head_rgbd_sensor_rgb_frame";
-/*          tf::StampedTransform transform;
-          try{ 
-          listener2.lookupTransform("/head_rgbd_sensor_rgb_frame", BASE_FRAME,ros::Time(0), transform);
-          }
-          catch (tf::TransformException &ex){
-          continue;
-          }
-          double offset_x = transform.getOrigin().x() ;        
-          double offset_y = transform.getOrigin().y() ;        
-          double offset_z = transform.getOrigin().z() ;    */    
-          double offset_x =0.22;        
-          double offset_y =0.15 ;        
-          double offset_z = 1.06586  ;       
-          listener.transformVector(BASE_FRAME, gV, tV);
-          msg.position.x = tV.vector.x +offset_x;
-          msg.position.y = tV.vector.y +offset_y;
-          msg.position.z = tV.vector.z +offset_z;
+          msg_x=msg.position.x;
+          msg_y=msg.position.y;
+          msg_z=msg.position.z;
+
+          // gV.vector.x = marker_array_msg_handles.markers[i].pose.position.x;
+          // gV.vector.y = marker_array_msg_handles.markers[i].pose.position.y;
+          // gV.vector.z = marker_array_msg_handles.markers[i].pose.position.z;
+ 
+
+          // tf::StampedTransform maptransform;
+          // listener2.waitForTransform("head_rgbd_sensor_rgb_frame", BASE_FRAME, ros::Time(0), ros::Duration(1.0));
+          // gV.header.stamp = ros::Time();
+          // gV.header.frame_id = "/head_rgbd_sensor_rgb_frame";
+          // //transform
+          // // tf::StampedTransform transform;
+          // // listener.waitForTransform("head_rgbd_sensor_rgb_frame", BASE_FRAME, ros::Time(0), ros::Duration(1.0));
+          // // try{ 
+          // // listener.lookupTransform("/head_rgbd_sensor_rgb_frame", BASE_FRAME,ros::Time(0), transform);
+          // // }
+          // // catch (tf::TransformException &ex){
+          // // continue;
+          // // }
+          // // double offset_x = transform.getOrigin().x() ;        
+          // // double offset_y = transform.getOrigin().y() ;        
+          // // double offset_z = transform.getOrigin().z() ;        
+          // double offset_x =0.22;        
+          // double offset_y =0.15 ;        
+          // double offset_z = 1.06586  ;       
+          // listener2.transformVector(std::string("/base_link"), gV, tV);
+          // msg.position.x = tV.vector.x +0.0;
+          // msg.position.y = tV.vector.y +0.0;
+          // msg.position.z = tV.vector.z +0.0;
+          graspub.publish(msg);
+                   
+          /////////// marker for handle
+          // marker_handle.header.frame_id = "base_link"; 
+          // marker_handle.header.stamp = ros::Time::now();
+          // marker_handle.id = 0;
+          // uint32_t shape = visualization_msgs::Marker::SPHERE;
+          // marker_handle.type = shape;
+
+          // marker_handle.pose.position.x = msg.position.x;
+          // marker_handle.pose.position.y = msg.position.y;
+          // marker_handle.pose.position.z = msg.position.z;
+
+          // marker_handle.pose.orientation.x = 0.0;
+          // marker_handle.pose.orientation.y = 0.0;
+          // marker_handle.pose.orientation.z = 0.0;
+          // marker_handle.pose.orientation.w = 1.0;
+
+          // double temp_dist=0.5;
+          
+          // //ROS_INFO("temp dist : %.3lf, temp dist2 : %.3lf, temp dist3 : %.3lf",temp_dist,temp_dist2,temp_dist3);
+          // marker_handle.scale.x = std::abs(temp_dist);
+          // marker_handle.scale.y = std::abs(temp_dist);
+          // marker_handle.scale.z = std::abs(temp_dist);
+
+          // marker_handle.color.r = 0.0;
+          // marker_handle.color.g = 0.7;
+          // marker_handle.color.b = 0.2;
+          // marker_handle.color.a = 0.85;
+
+          // target_pub.publish(marker_handle);
         }
-
     }
-/*    if (msg_trans.position.x == msg.position.x)
+
+    // msg_trans = msg;
+    if (msg_trans.position.x == msg.position.x)
     {ite=ite+1;
       if (ite>10)
         {break;}
-    }*/
+    }
+   
+*/
 
-          graspub.publish(msg);
-
-  }
+     ros::spinOnce();
+     rate.sleep();
+   }
+  
   std::cout << "switching to publishing pose only"<<std::endl;
 
-  while (ros::ok())
-  {
-      graspub.publish(msg);
-      ros::spinOnce();
-  }
+  //while (ros::ok())
+  //{
+      //msg.position.x=msg_x;
+      //msg.position.y=msg_y;
+      //msg.position.z=msg_z;
+      //graspub.publish(msg);
+      //ros::spinOnce();
+      //rate.sleep();
+  //}
   return 0;
 }

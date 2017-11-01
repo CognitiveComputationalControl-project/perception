@@ -8,6 +8,42 @@ Handle_manager::Handle_manager()
 	
 }
 
+void Handle_manager::grasp_point_callback(const geometry_msgs::Pose::ConstPtr& msg)
+{
+
+
+    ROS_INFO("Recieved grasp point");
+    ///////// marker for handle
+    visualization_msgs::Marker marker_handle; 
+    marker_handle.header.frame_id = "base_link"; 
+    marker_handle.header.stamp = ros::Time::now();
+    marker_handle.id = 0;
+    uint32_t shape = visualization_msgs::Marker::SPHERE;
+    marker_handle.type = shape;
+
+    marker_handle.pose.position.x = msg->position.x;
+    marker_handle.pose.position.y = msg->position.y;
+    marker_handle.pose.position.z = msg->position.z;
+
+    marker_handle.pose.orientation.x = 0.0;
+    marker_handle.pose.orientation.y = 0.0;
+    marker_handle.pose.orientation.z = 0.0;
+    marker_handle.pose.orientation.w = 1.0;
+
+    double temp_dist=0.5;
+
+    //ROS_INFO("temp dist : %.3lf, temp dist2 : %.3lf, temp dist3 : %.3lf",temp_dist,temp_dist2,temp_dist3);
+    marker_handle.scale.x = std::abs(temp_dist);
+    marker_handle.scale.y = std::abs(temp_dist);
+    marker_handle.scale.z = std::abs(temp_dist);
+
+    marker_handle.color.r = 0.0;
+    marker_handle.color.g = 0.7;
+    marker_handle.color.b = 0.2;
+    marker_handle.color.a = 0.85;
+
+    handletarget_pub.publish(marker_handle);
+}
 
 
 void Handle_manager::global_pose_callback(const geometry_msgs::PoseStamped::ConstPtr& msg)

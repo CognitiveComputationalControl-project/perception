@@ -72,6 +72,7 @@ public:
 	ros::Publisher Gaze_point_pub;
 	ros::Publisher Gaze_activate_pub;
 	ros::Publisher setNavTarget_pub;
+    ros::Publisher handletarget_pub;
 	
 	int index;
 	tf::TransformListener 	  listener;
@@ -89,6 +90,7 @@ public:
 	void joint_states_callback(const sensor_msgs::JointState::ConstPtr& msg);
 	void laser_scan_callback(const sensor_msgs::LaserScan::ConstPtr& msg);
 	void keyboard_callback(const keyboard::Key::ConstPtr& msg);
+    void grasp_point_callback(const geometry_msgs::Pose::ConstPtr& msg);
 	
 	
 	void getCameraregion();
