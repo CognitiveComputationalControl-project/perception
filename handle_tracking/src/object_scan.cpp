@@ -4,13 +4,12 @@
 Handle_manager::~Handle_manager(){}
 Handle_manager::Handle_manager()
 {
-	
+	x_left= 1000;
 	
 }
-double x_left = 1000;
-static geometry_msgs::Pose grasp_pose;
 
-void Handle_manager::grasp_point_callback(const geometry_msgs::Pose::ConstPtr& msg)
+
+void Handle_manager::grasp_point_callback(const geometry_msgs::PoseStamped::ConstPtr& msg)
 {
     ROS_INFO("Recieved grasp point");
     ///////// marker for handle
@@ -21,9 +20,9 @@ void Handle_manager::grasp_point_callback(const geometry_msgs::Pose::ConstPtr& m
     uint32_t shape = visualization_msgs::Marker::SPHERE;
     marker_handle.type = shape;
 
-    marker_handle.pose.position.x = msg->position.x;
-    marker_handle.pose.position.y = msg->position.y;
-    marker_handle.pose.position.z = msg->position.z;
+    marker_handle.pose.position.x = msg->pose.position.x;
+    marker_handle.pose.position.y = msg->pose.position.y;
+    marker_handle.pose.position.z = msg->pose.position.z;
 
     marker_handle.pose.orientation.x = 0.0;
     marker_handle.pose.orientation.y = 0.0;
@@ -49,19 +48,18 @@ void Handle_manager::marker_array_callback(const visualization_msgs::MarkerArray
 {
 for (int i = 0 ; i < msg->markers.size(); i++)
     {
-/*    	        	std::cout << x_left;
-*/
-       // geometry_msgs::Vector3Stamped gV, tV;
+
       if ( (x_left > msg->markers[i].pose.position.x) /*&& abs(msg->markers[i].pose.position.y)< 0.2*/)
         { 
         	std::cout << "assignment";
           x_left = msg->markers[i].pose.position.x;
-          grasp_pose.position.y=msg->markers[i].pose.position.y;
-          grasp_pose.position.z=msg->markers[i].pose.position.z;
-          grasp_pose.position.x=msg->markers[i].pose.position.x;
+          grasp_pose.pose.position.y=msg->markers[i].pose.position.y;
+          grasp_pose.pose.position.z=msg->markers[i].pose.position.z;
+          grasp_pose.pose.position.x=msg->markers[i].pose.position.x;
 		}
 	}
-grasp_pub.publish(grasp_pose);
+	grasp_pose.header.frame_id = "/hsrb/head_rgbd_sensor/depth_registered/rectified_points";
+	grasp_pub.publish(grasp_pose);
 }
 
 void Handle_manager::global_pose_callback(const geometry_msgs::PoseStamped::ConstPtr& msg)
