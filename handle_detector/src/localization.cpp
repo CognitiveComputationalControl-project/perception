@@ -268,9 +268,7 @@ ros  ::init(argc, argv, "localization");
 
     ros::spinOnce();
     rate.sleep();
-    pcl::PointXYZ pt;
-    point_handle.points.clear();
-    for (int i = 0 ; i < marker_array_msg_handles.size(); i++)
+/*    for (int i = 0 ; i < marker_array_msg_handles.size(); i++)
     {
       grasp_point
       if ( x_max > marker_array_msg_handles[i].pose.position.x)
@@ -281,8 +279,7 @@ ros  ::init(argc, argv, "localization");
           pt.z = marker_array_msg_handles[i].pose.position.z;
           point_handle.push_back(pt);
         }
-      graspub.publish(*point_handle);
-    }
+    }*/
   }
 
   return 0;
