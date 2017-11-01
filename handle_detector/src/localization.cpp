@@ -272,14 +272,27 @@ ros  ::init(argc, argv, "localization");
     ros::spinOnce();
     rate.sleep();
     msg_trans = msg;
+     tf::TransformListener listener;
+
     for (int i = 0 ; i < marker_array_msg_handles.markers.size(); i++)
     {
+       geometry_msgs::Vector3Stamped gV, tV;
       if ( x_max > marker_array_msg_handles.markers[i].pose.position.x)
         { 
           x_max = marker_array_msg_handles.markers[i].pose.position.x;
-          msg.position.x = marker_array_msg_handles.markers[i].pose.position.x;
-          msg.position.y = marker_array_msg_handles.markers[i].pose.position.y;
-          msg.position.z = marker_array_msg_handles.markers[i].pose.position.z;
+          gV.vector.x = marker_array_msg_handles.markers[i].pose.position.x;
+          gV.vector.y = marker_array_msg_handles.markers[i].pose.position.y;
+          gV.vector.z = marker_array_msg_handles.markers[i].pose.position.z;
+
+          tf::StampedTransform maptransform;
+          listener.waitForTransform("head_rgbd_sensor_rgb_frame", "base_link", ros::Time(0), ros::Duration(1.0));
+                  
+          gV.header.stamp = ros::Time();
+          gV.header.frame_id = "/head_rgbd_sensor_rgb_frame";
+          listener.transformVector(std::string("/base_link"), gV, tV);
+          msg.position.x = tV.vector.x;
+          msg.position.y = tV.vector.y;
+          msg.position.z = tV.vector.z;
         }
 
     }
@@ -288,7 +301,11 @@ ros  ::init(argc, argv, "localization");
       if (ite>10)
         {break;}
     }*/
-    graspub.publish(msg);
+    if (msg.position.x != 0)
+    {
+          graspub.publish(msg);
+
+    }
   }
   std::cout << "switching to publishing pose only"<<std::endl;
 
