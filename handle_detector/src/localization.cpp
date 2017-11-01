@@ -26,7 +26,7 @@
 #define EIGEN_DONT_PARALLELIZE
 
 typedef pcl::PointCloud<pcl::PointXYZ> PointCloud;
-
+const std::string BASE_FRAME = "odom";
 const std::string RANGE_SENSOR_FRAME = "head_rgbd_sensor_rgb_frame";
 const std::string RANGE_SENSOR_TOPIC = "/hsrb/head_rgbd_sensor/depth_registered/rectified_points";
 
@@ -166,8 +166,8 @@ ros  ::init(argc, argv, "localization");
   {
     // wait for and then lookup transform between camera frame and base frame
     tf::TransformListener transform_listener;
-    transform_listener.waitForTransform(RANGE_SENSOR_FRAME, "base_link", ros::Time(0), ros::Duration(3));
-    transform_listener.lookupTransform("base_link", RANGE_SENSOR_FRAME, ros::Time(0), g_transform);
+    transform_listener.waitForTransform(RANGE_SENSOR_FRAME, BASE_FRAME, ros::Time(0), ros::Duration(3));
+    transform_listener.lookupTransform(BASE_FRAME, RANGE_SENSOR_FRAME, ros::Time(0), g_transform);
 
     // create subscriber for camera topic
     printf("Reading point cloud data from sensor topic: %s\n", RANGE_SENSOR_TOPIC.c_str());
@@ -273,26 +273,41 @@ ros  ::init(argc, argv, "localization");
     rate.sleep();
     msg_trans = msg;
      tf::TransformListener listener;
+     tf::TransformListener listener2;
 
     for (int i = 0 ; i < marker_array_msg_handles.markers.size(); i++)
     {
        geometry_msgs::Vector3Stamped gV, tV;
-      if ( x_max > marker_array_msg_handles.markers[i].pose.position.x)
+      if ( x_max > marker_array_msg_handles.markers[i].pose.position.x && abs(marker_array_msg_handles.markers[i].pose.position.y)<0.1 )
         { 
+          std::cout << " HERE IS ONE VALUE YOU SHOULD BE LOOKING AT MATHAFUCKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"<<std::endl;
           x_max = marker_array_msg_handles.markers[i].pose.position.x;
           gV.vector.x = marker_array_msg_handles.markers[i].pose.position.x;
           gV.vector.y = marker_array_msg_handles.markers[i].pose.position.y;
           gV.vector.z = marker_array_msg_handles.markers[i].pose.position.z;
 
           tf::StampedTransform maptransform;
-          listener.waitForTransform("head_rgbd_sensor_rgb_frame", "base_link", ros::Time(0), ros::Duration(1.0));
+          listener.waitForTransform("head_rgbd_sensor_rgb_frame", BASE_FRAME, ros::Time(0), ros::Duration(1.0));
                   
           gV.header.stamp = ros::Time();
           gV.header.frame_id = "/head_rgbd_sensor_rgb_frame";
-          listener.transformVector(std::string("/base_link"), gV, tV);
-          msg.position.x = tV.vector.x;
-          msg.position.y = tV.vector.y;
-          msg.position.z = tV.vector.z;
+/*          tf::StampedTransform transform;
+          try{ 
+          listener2.lookupTransform("/head_rgbd_sensor_rgb_frame", BASE_FRAME,ros::Time(0), transform);
+          }
+          catch (tf::TransformException &ex){
+          continue;
+          }
+          double offset_x = transform.getOrigin().x() ;        
+          double offset_y = transform.getOrigin().y() ;        
+          double offset_z = transform.getOrigin().z() ;    */    
+          double offset_x =0.22;        
+          double offset_y =0.15 ;        
+          double offset_z = 1.06586  ;       
+          listener.transformVector(BASE_FRAME, gV, tV);
+          msg.position.x = tV.vector.x +offset_x;
+          msg.position.y = tV.vector.y +offset_y;
+          msg.position.z = tV.vector.z +offset_z;
         }
 
     }
@@ -301,11 +316,9 @@ ros  ::init(argc, argv, "localization");
       if (ite>10)
         {break;}
     }*/
-    if (msg.position.x != 0)
-    {
+
           graspub.publish(msg);
 
-    }
   }
   std::cout << "switching to publishing pose only"<<std::endl;
 
