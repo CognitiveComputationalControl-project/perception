@@ -28,7 +28,7 @@ void Handle_manager::Publish_visualized_marker_first(const geometry_msgs::PoseSt
     visual_marker.pose.orientation.z = 0.0;
     visual_marker.pose.orientation.w = 1.0;
 
-    double temp_dist=0.2;
+    double temp_dist=0.05;
 
     //ROS_INFO("temp dist : %.3lf, temp dist2 : %.3lf, temp dist3 : %.3lf",temp_dist,temp_dist2,temp_dist3);
     visual_marker.scale.x = std::abs(temp_dist);
@@ -64,7 +64,7 @@ void Handle_manager::Publish_visualized_marker(const geometry_msgs::PoseStamped 
     visual_marker.pose.orientation.z = 0.0;
     visual_marker.pose.orientation.w = 1.0;
 
-    double temp_dist=0.2;
+    double temp_dist=0.05;
 
     //ROS_INFO("temp dist : %.3lf, temp dist2 : %.3lf, temp dist3 : %.3lf",temp_dist,temp_dist2,temp_dist3);
     visual_marker.scale.x = std::abs(temp_dist);
@@ -136,11 +136,12 @@ for (int i = 0 ; i < msg->markers.size(); i++)
 	grasp_pose.header.frame_id = "head_rgbd_sensor_rgb_frame";
 
 	Publish_visualized_marker_first(grasp_pose);
+	
 
 
 
 	geometry_msgs::Vector3Stamped gV, tV;
-	listener.waitForTransform("head_rgbd_sensor_rgb_frame", "base_link", ros::Time(0), ros::Duration(1.0));
+	listener.waitForTransform("head_rgbd_sensor_rgb_frame", "odom", ros::Time(0), ros::Duration(1.0));
 	gV.header.stamp = ros::Time();
 	gV.header.frame_id = "/head_rgbd_sensor_rgb_frame";
 
@@ -150,9 +151,9 @@ for (int i = 0 ; i < msg->markers.size(); i++)
 
 	//transform
 	tf::StampedTransform transform_sensor_base;
-	listener.waitForTransform("head_rgbd_sensor_rgb_frame", "base_link", ros::Time(0), ros::Duration(1.0));
+	listener.waitForTransform("head_rgbd_sensor_rgb_frame", "odom", ros::Time(0), ros::Duration(1.0));
 	try{ 
-	listener.lookupTransform("/head_rgbd_sensor_rgb_frame", "base_link",ros::Time(0), transform_sensor_base);
+	listener.lookupTransform("/head_rgbd_sensor_rgb_frame", "odom",ros::Time(0), transform_sensor_base);
 	}
 	catch (tf::TransformException &ex){
 		
@@ -161,13 +162,13 @@ for (int i = 0 ; i < msg->markers.size(); i++)
 	double offset_y = transform_sensor_base.getOrigin().y() ;        
 	double offset_z = transform_sensor_base.getOrigin().z() ;       
 
-	ROS_INFO("offset_x : %.3lf, offset_y : %.3lf, offset_z : %.3lf \n ", offset_x, offset_y, offset_z) ;
+	// ROS_INFO("offset_x : %.3lf, offset_y : %.3lf, offset_z : %.3lf \n ", offset_x, offset_y, offset_z) ;
 
-	listener.transformVector(std::string("/base_link"), gV, tV);
+	listener.transformVector(std::string("/odom"), gV, tV);
 	
 	grasp_transformed_pose.header.stamp=ros::Time::now();
-	grasp_transformed_pose.header.frame_id="/base_link";
-	grasp_transformed_pose.pose.position.x = tV.vector.x-offset_z;
+	grasp_transformed_pose.header.frame_id="/odom";
+	grasp_transformed_pose.pose.position.x = tV.vector.x-offset_z-0.055;
 	grasp_transformed_pose.pose.position.y = tV.vector.y+offset_x;
 	grasp_transformed_pose.pose.position.z = tV.vector.z+offset_y;
 
