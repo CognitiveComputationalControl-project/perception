@@ -4,8 +4,8 @@
 Handle_manager::~Handle_manager(){}
 Handle_manager::Handle_manager()
 {
-	x_left= 1000;
-	
+    x_left= 1000;
+    
 }
 
 void Handle_manager::Publish_visualized_marker_first(const geometry_msgs::PoseStamped Pose)
@@ -28,7 +28,7 @@ void Handle_manager::Publish_visualized_marker_first(const geometry_msgs::PoseSt
     visual_marker.pose.orientation.z = 0.0;
     visual_marker.pose.orientation.w = 1.0;
 
-    double temp_dist=0.05;
+    double temp_dist=0.2;
 
     //ROS_INFO("temp dist : %.3lf, temp dist2 : %.3lf, temp dist3 : %.3lf",temp_dist,temp_dist2,temp_dist3);
     visual_marker.scale.x = std::abs(temp_dist);
@@ -64,7 +64,7 @@ void Handle_manager::Publish_visualized_marker(const geometry_msgs::PoseStamped 
     visual_marker.pose.orientation.z = 0.0;
     visual_marker.pose.orientation.w = 1.0;
 
-    double temp_dist=0.05;
+    double temp_dist=0.2;
 
     //ROS_INFO("temp dist : %.3lf, temp dist2 : %.3lf, temp dist3 : %.3lf",temp_dist,temp_dist2,temp_dist3);
     visual_marker.scale.x = std::abs(temp_dist);
@@ -120,70 +120,51 @@ void Handle_manager::marker_array_callback(const visualization_msgs::MarkerArray
 
 for (int i = 0 ; i < msg->markers.size(); i++)
     {
+    grasp_pose.header.stamp = ros::Time::now();
+    grasp_pose.header.frame_id = "head_rgbd_sensor_rgb_frame";
 
       if ( (x_left > msg->markers[i].pose.position.x) /*&& abs(msg->markers[i].pose.position.y)< 0.2*/)
         { 
           // td::cout << "assignment";
           x_left = msg->markers[i].pose.position.x;
-          grasp_pose.pose.position.x=msg->markers[i].pose.position.x;
-          grasp_pose.pose.position.y=msg->markers[i].pose.position.y;
-          grasp_pose.pose.position.z=msg->markers[i].pose.position.z;
-          
-		}
-	}
-	
-	grasp_pose.header.stamp = ros::Time::now();
-	grasp_pose.header.frame_id = "head_rgbd_sensor_rgb_frame";
+          grasp_pose.pose=msg->markers[i].pose;
+        }
+    }
+    
+    grasp_pose.header.stamp = ros::Time::now();
+    grasp_pose.header.frame_id = "head_rgbd_sensor_rgb_frame";
 
-	Publish_visualized_marker_first(grasp_pose);
-	
+    Publish_visualized_marker_first(grasp_pose);
 
+    geometry_msgs::Vector3Stamped gV, tV;
+    gV.header.stamp = ros::Time();
+    gV.header.frame_id = "head_rgbd_sensor_rgb_frame";
 
+    gV.vector.x = grasp_pose.pose.position.x;
+    gV.vector.y = grasp_pose.pose.position.y;
+    gV.vector.z = grasp_pose.pose.position.z;
 
-	geometry_msgs::Vector3Stamped gV, tV;
-	listener.waitForTransform("head_rgbd_sensor_rgb_frame", "odom", ros::Time(0), ros::Duration(1.0));
-	gV.header.stamp = ros::Time();
-	gV.header.frame_id = "/head_rgbd_sensor_rgb_frame";
+    //transform
+    tf::StampedTransform transform_sensor_base;
+    listener.waitForTransform("head_rgbd_sensor_rgb_frame","base_link",  ros::Time(0), ros::Duration(1.0));
+    try{ 
+    listener.lookupTransform("head_rgbd_sensor_rgb_frame","base_link", ros::Time(0), transform_sensor_base);
+    listener.transformPose (std::string("base_link"), grasp_pose,  grasp_transformed_pose) ; 
 
-	gV.vector.x = grasp_pose.pose.position.x;
-	gV.vector.y = grasp_pose.pose.position.y;
-	gV.vector.z = grasp_pose.pose.position.z;
+    }   
+    catch (tf::TransformException &ex){
+    }
+    Publish_visualized_marker(grasp_transformed_pose);
+    grasp_transformed_pose.header.frame_id = "base_link";
 
-	//transform
-	tf::StampedTransform transform_sensor_base;
-	listener.waitForTransform("head_rgbd_sensor_rgb_frame", "odom", ros::Time(0), ros::Duration(1.0));
-	try{ 
-	listener.lookupTransform("/head_rgbd_sensor_rgb_frame", "odom",ros::Time(0), transform_sensor_base);
-	}
-	catch (tf::TransformException &ex){
-		
-	}
-	double offset_x = transform_sensor_base.getOrigin().x() ;        
-	double offset_y = transform_sensor_base.getOrigin().y() ;        
-	double offset_z = transform_sensor_base.getOrigin().z() ;       
+    grasp_pub.publish(grasp_transformed_pose);
 
-	// ROS_INFO("offset_x : %.3lf, offset_y : %.3lf, offset_z : %.3lf \n ", offset_x, offset_y, offset_z) ;
-
-	listener.transformVector(std::string("/odom"), gV, tV);
-	
-	grasp_transformed_pose.header.stamp=ros::Time::now();
-	grasp_transformed_pose.header.frame_id="/odom";
-	grasp_transformed_pose.pose.position.x = tV.vector.x-offset_z-0.055;
-	grasp_transformed_pose.pose.position.y = tV.vector.y+offset_x;
-	grasp_transformed_pose.pose.position.z = tV.vector.z+offset_y;
-
-
-
-	Publish_visualized_marker(grasp_transformed_pose);
-    // graspub.publish(msg);
-
-	grasp_pub.publish(grasp_transformed_pose);
 }
 
 void Handle_manager::global_pose_callback(const geometry_msgs::PoseStamped::ConstPtr& msg)
 {
-	global_pose[0]=msg->pose.position.x;
-	global_pose[1]=msg->pose.position.y;
+    global_pose[0]=msg->pose.position.x;
+    global_pose[1]=msg->pose.position.y;
 
 
    tf::StampedTransform baselinktransform;
@@ -191,7 +172,7 @@ void Handle_manager::global_pose_callback(const geometry_msgs::PoseStamped::Cons
    listener.lookupTransform("map", "base_link", ros::Time(0), baselinktransform);
    double yaw_tf =   tf::getYaw(baselinktransform.getRotation()); 
 
-	global_pose[2]=yaw_tf;
+    global_pose[2]=yaw_tf;
 
 
    tf::StampedTransform Camera_transform;
@@ -208,12 +189,12 @@ void Handle_manager::global_pose_callback(const geometry_msgs::PoseStamped::Cons
 void Handle_manager::joint_states_callback(const sensor_msgs::JointState::ConstPtr& msg)
 {
 
-	Head_Pos[0]=msg->position[9];			//pan
-	Head_Pos[1]=msg->position[10];			//tilt
-	
-	// ROS_INFO("Head moving : %s",IsHeadMoving);
-	// 0.000138, -3.8e-05,
-	// 0.000138, -0.001567,
+    Head_Pos[0]=msg->position[9];           //pan
+    Head_Pos[1]=msg->position[10];          //tilt
+    
+    // ROS_INFO("Head moving : %s",IsHeadMoving);
+    // 0.000138, -3.8e-05,
+    // 0.000138, -0.001567,
 
 }
 
@@ -227,67 +208,67 @@ void Handle_manager::Human_MarkerarrayCallback(const visualization_msgs::MarkerA
 void Handle_manager::keyboard_callback(const keyboard::Key::ConstPtr& msg)
 {
 
-	ROS_INFO("Received Keyboard");
-	std::cout<<msg->code<<std::endl;
-	if(msg->code==116)		//if keyboard input is "t"
-	{
-		
-	}
+    ROS_INFO("Received Keyboard");
+    std::cout<<msg->code<<std::endl;
+    if(msg->code==116)      //if keyboard input is "t"
+    {
+        
+    }
 }
 
 void Handle_manager::getCameraregion()
 {
 
-	// double global_robot_x= global_pose[0];
-	// double global_robot_y= global_pose[1];
-	// double global_robot_theta = global_pose[2]+Head_Pos[0];
+    // double global_robot_x= global_pose[0];
+    // double global_robot_y= global_pose[1];
+    // double global_robot_theta = global_pose[2]+Head_Pos[0];
 
 
-	// // std::cout<<"theta:"<<Robot_Pos[2]<<",head :"<<Head_Pos[0]<<", total :"<<global_robot_theta<<std::endl;
+    // // std::cout<<"theta:"<<Robot_Pos[2]<<",head :"<<Head_Pos[0]<<", total :"<<global_robot_theta<<std::endl;
 
 
-	// double m_1=tan(30*3.141592/180);
-	// double m_2=tan(30*3.141592/180);
+    // double m_1=tan(30*3.141592/180);
+    // double m_2=tan(30*3.141592/180);
 
-	// visiblie_idx_set.clear();
+    // visiblie_idx_set.clear();
 
-	// global_robot_theta=0.0;
-	// //Iteration for belief grid
-	// for(int i(0);i<static_belief_map.info.width;i++)
-	// 	for(int j(0);j<static_belief_map.info.height;j++)
-	// {
-	// 	int belief_map_idx=j*static_belief_map.info.height+i;
+    // global_robot_theta=0.0;
+    // //Iteration for belief grid
+    // for(int i(0);i<static_belief_map.info.width;i++)
+    //  for(int j(0);j<static_belief_map.info.height;j++)
+    // {
+    //  int belief_map_idx=j*static_belief_map.info.height+i;
 
-	// 	// double map_ogirin_x = static_belief_map.info.origin.position.x+global_robot_x;
-	// 	// double map_ogirin_y = static_belief_map.info.origin.position.y+global_robot_y;
+    //  // double map_ogirin_x = static_belief_map.info.origin.position.x+global_robot_x;
+    //  // double map_ogirin_y = static_belief_map.info.origin.position.y+global_robot_y;
 
-	// 	double map_ogirin_x = static_belief_map.info.origin.position.x;
-	// 	double map_ogirin_y = static_belief_map.info.origin.position.y;
-
-
-	// 	double trans_vector_x=(i+0.5)*static_belief_map.info.resolution;
-	// 	double trans_vector_y=(j+0.5)*static_belief_map.info.resolution;
-
-	// 	double rot_trans_vector_x = cos(global_robot_theta)*trans_vector_x-sin(global_robot_theta)*trans_vector_y;
-	// 	double rot_trans_vector_y = sin(global_robot_theta)*trans_vector_x+cos(global_robot_theta)*trans_vector_y;
-
-	// 	double belief_global_x=map_ogirin_x+rot_trans_vector_x;
-	// 	double belief_global_y=map_ogirin_y+rot_trans_vector_y;
+    //  double map_ogirin_x = static_belief_map.info.origin.position.x;
+    //  double map_ogirin_y = static_belief_map.info.origin.position.y;
 
 
-	// 	//solve
-	// 	bool line1_result =getlinevalue(1,belief_global_x,belief_global_y);
-	// 	bool line2_result =getlinevalue(2,belief_global_x,belief_global_y);
+    //  double trans_vector_x=(i+0.5)*static_belief_map.info.resolution;
+    //  double trans_vector_y=(j+0.5)*static_belief_map.info.resolution;
+
+    //  double rot_trans_vector_x = cos(global_robot_theta)*trans_vector_x-sin(global_robot_theta)*trans_vector_y;
+    //  double rot_trans_vector_y = sin(global_robot_theta)*trans_vector_x+cos(global_robot_theta)*trans_vector_y;
+
+    //  double belief_global_x=map_ogirin_x+rot_trans_vector_x;
+    //  double belief_global_y=map_ogirin_y+rot_trans_vector_y;
 
 
-	// 	if( line1_result && line2_result )
-	// 	{
-	// 		static_belief_map.data[belief_map_idx]=30;	
-	// 		visiblie_idx_set.push_back(belief_map_idx);					//save cell_id 
-	// 	}
-	// 	else
-	// 		static_belief_map.data[belief_map_idx]=0.0;	
-	// }
+    //  //solve
+    //  bool line1_result =getlinevalue(1,belief_global_x,belief_global_y);
+    //  bool line2_result =getlinevalue(2,belief_global_x,belief_global_y);
+
+
+    //  if( line1_result && line2_result )
+    //  {
+    //      static_belief_map.data[belief_map_idx]=30;  
+    //      visiblie_idx_set.push_back(belief_map_idx);                 //save cell_id 
+    //  }
+    //  else
+    //      static_belief_map.data[belief_map_idx]=0.0; 
+    // }
 
 
 
