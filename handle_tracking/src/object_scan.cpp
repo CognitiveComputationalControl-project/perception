@@ -28,7 +28,7 @@ void Handle_manager::Publish_visualized_marker_first(const geometry_msgs::PoseSt
     visual_marker.pose.orientation.z = 0.0;
     visual_marker.pose.orientation.w = 1.0;
 
-    double temp_dist=0.2;
+    double temp_dist=0.05;
 
     //ROS_INFO("temp dist : %.3lf, temp dist2 : %.3lf, temp dist3 : %.3lf",temp_dist,temp_dist2,temp_dist3);
     visual_marker.scale.x = std::abs(temp_dist);
@@ -64,7 +64,7 @@ void Handle_manager::Publish_visualized_marker(const geometry_msgs::PoseStamped 
     visual_marker.pose.orientation.z = 0.0;
     visual_marker.pose.orientation.w = 1.0;
 
-    double temp_dist=0.2;
+    double temp_dist=0.050;
 
     //ROS_INFO("temp dist : %.3lf, temp dist2 : %.3lf, temp dist3 : %.3lf",temp_dist,temp_dist2,temp_dist3);
     visual_marker.scale.x = std::abs(temp_dist);
