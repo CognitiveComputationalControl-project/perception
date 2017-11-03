@@ -28,7 +28,7 @@ void Handle_manager::Publish_visualized_marker_first(const geometry_msgs::PoseSt
     visual_marker.pose.orientation.z = 0.0;
     visual_marker.pose.orientation.w = 1.0;
 
-    double temp_dist=0.2;
+    double temp_dist=0.05;
 
     //ROS_INFO("temp dist : %.3lf, temp dist2 : %.3lf, temp dist3 : %.3lf",temp_dist,temp_dist2,temp_dist3);
     visual_marker.scale.x = std::abs(temp_dist);
@@ -126,37 +126,28 @@ for (int i = 0 ; i < msg->markers.size(); i++)
       if ( (x_left > msg->markers[i].pose.position.x) /*&& abs(msg->markers[i].pose.position.y)< 0.2*/)
         { 
           // td::cout << "assignment";
-          x_left = msg->markers[i].pose.position.x;
-          grasp_pose.pose=msg->markers[i].pose;
+        x_left = msg->markers[i].pose.position.x;
+        grasp_pose.pose=msg->markers[i].pose;
+        grasp_pose.header = msg->markers[i].header;
+
         }
     }
     
-    grasp_pose.header.stamp = ros::Time::now();
-    grasp_pose.header.frame_id = "head_rgbd_sensor_rgb_frame";
-
     Publish_visualized_marker_first(grasp_pose);
-
-    geometry_msgs::Vector3Stamped gV, tV;
-    gV.header.stamp = ros::Time();
-    gV.header.frame_id = "head_rgbd_sensor_rgb_frame";
-
-    gV.vector.x = grasp_pose.pose.position.x;
-    gV.vector.y = grasp_pose.pose.position.y;
-    gV.vector.z = grasp_pose.pose.position.z;
 
     //transform
     tf::StampedTransform transform_sensor_base;
-    listener.waitForTransform("head_rgbd_sensor_rgb_frame","base_link",  ros::Time(0), ros::Duration(1.0));
+    listener.waitForTransform("head_rgbd_sensor_rgb_frame","odom",  ros::Time(0), ros::Duration(1.0));
     try{ 
-    listener.lookupTransform("head_rgbd_sensor_rgb_frame","base_link", ros::Time(0), transform_sensor_base);
-    listener.transformPose (std::string("base_link"), grasp_pose,  grasp_transformed_pose) ; 
+    listener.lookupTransform("head_rgbd_sensor_rgb_frame","odom", ros::Time(0), transform_sensor_base);
+    listener.transformPose (std::string("odom"), grasp_pose,  grasp_transformed_pose) ; 
 
     }   
     catch (tf::TransformException &ex){
     }
+    std::cout<<grasp_transformed_pose.header.frame_id<<std::endl;
+    ROS_INFO("_x : %.3lf, _y : %.3lf, _z : %.3lf \n ", grasp_transformed_pose.pose.position.x, grasp_transformed_pose.pose.position.y, grasp_transformed_pose.pose.position.z) ; 
     Publish_visualized_marker(grasp_transformed_pose);
-    grasp_transformed_pose.header.frame_id = "base_link";
-
     grasp_pub.publish(grasp_transformed_pose);
 
 }
