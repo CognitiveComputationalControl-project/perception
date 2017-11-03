@@ -137,7 +137,7 @@ for (int i = 0 ; i < msg->markers.size(); i++)
 
     //transform
     tf::StampedTransform transform_sensor_base;
-    listener.waitForTransform("head_rgbd_sensor_rgb_frame","odom",  ros::Time(0), ros::Duration(1.0));
+    listener.waitForTransform("head_rgbd_sensor_rgb_frame","odom",  ros::Time(0), ros::Duration(2.0));
     try{ 
     listener.lookupTransform("head_rgbd_sensor_rgb_frame","odom", ros::Time(0), transform_sensor_base);
     listener.transformPose (std::string("odom"), grasp_pose,  grasp_transformed_pose) ; 
@@ -145,8 +145,11 @@ for (int i = 0 ; i < msg->markers.size(); i++)
     }   
     catch (tf::TransformException &ex){
     }
-    std::cout<<grasp_transformed_pose.header.frame_id<<std::endl;
+    
+    //std::cout<<grasp_transformed_pose.header.frame_id<<std::endl;
     ROS_INFO("_x : %.3lf, _y : %.3lf, _z : %.3lf \n ", grasp_transformed_pose.pose.position.x, grasp_transformed_pose.pose.position.y, grasp_transformed_pose.pose.position.z) ; 
+    grasp_transformed_pose.header.stamp=ros::Time::now();
+    grasp_transformed_pose.header.frame_id="odom";
     Publish_visualized_marker(grasp_transformed_pose);
     grasp_pub.publish(grasp_transformed_pose);
 
