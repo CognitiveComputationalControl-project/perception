@@ -56,8 +56,8 @@ double x_max = 10000;
 int ite = 0;
 void chatterCallback(const sensor_msgs::PointCloud2ConstPtr& input)
 {
-/*  if (omp_get_wtime() - g_prev_time < g_update_interval)
-    return;*/
+  //if (omp_get_wtime() - g_prev_time < g_update_interval)
+    //return;
 
   // check whether input frame is equivalent to range sensor frame constant
   std::string input_frame = input->header.frame_id;
