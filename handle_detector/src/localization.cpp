@@ -221,7 +221,7 @@ int main(int argc, char** argv)
 */  ros::Publisher target_pub =node.advertise<visualization_msgs::Marker>("/handle_target", 10);
 
   // how often things are published
-  ros::Rate rate(10);
+  ros::Rate rate(1);
 
   double prev_time = omp_get_wtime();
 
