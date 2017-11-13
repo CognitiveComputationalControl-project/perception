@@ -11,6 +11,7 @@
 #include <Eigen/Dense>
 #include <sstream>
 #include <boost/thread/thread.hpp>
+#include "handle_detector/localize_handle.h"
 
 
 using namespace Eigen;
@@ -43,25 +44,30 @@ int main(int argc, char **argv)
 
   ros::NodeHandle n;
   object_tracker.handletarget_pub=n.advertise<visualization_msgs::Marker>("/detected_final_handle_marker",50,true);
-  object_tracker.handlemiddletarget_pub=n.advertise<visualization_msgs::Marker>("/detected_middle_handle_marker",50,true);
   object_tracker.grasp_pub = n.advertise<geometry_msgs::PoseStamped> ("handle_detector/grasp_point", 10,true);
-  // object_tracker.Gaze_point_pub= n.advertise<geometry_msgs::Point>("/gazed_point_fixing_node/target_point", 50, true);
-  // object_tracker.Gaze_activate_pub= n.advertise<std_msgs::Bool>("/gazed_point_fixing_node/activate", 50, true);
-  // global_pos_sub= n.subscribe<geometry_msgs::PoseStamped>("/global_pose", 10, &Handle_manager::global_pose_callback,&object_tracker);
-  // jointstates_sub =n.subscribe<sensor_msgs::JointState>("/hsrb/joint_states", 10, &Handle_manager::joint_states_callback,&object_tracker);
-  Marker_array_sub = n.subscribe<visualization_msgs::MarkerArray>("localization/visualization_all_handles", 10, &Handle_manager::marker_array_callback,&object_tracker);
-  // keyboard_sub=n.subscribe<keyboard::Key>("/keyboard/keydown",10, &Handle_manager::keyboard_callback,&object_tracker);
-  Detected_handle_sub=n.subscribe<geometry_msgs::PoseStamped>("handle_detector/grasp_point",10,&Handle_manager::grasp_point_callback, &object_tracker);
 
-  ros::Rate loop_rate(25);
+
+  object_tracker.client = n.serviceClient<handle_detector::localize_handle>("localization/localize_handle");
   
+
+  handle_detector::localize_handle srv;
+
+  ros::Rate loop_rate(10);
+
   while (ros::ok())
   {
-     ros::spinOnce();
-     loop_rate.sleep();  
+  srv.request.handle_used = false;
+  if (object_tracker.client.call(srv))
+  {
+    object_tracker.set_marker(srv.response.handle_marker);
   }
-
-  ros::spin();
+  else
+  {
+    ROS_INFO("Failed to call service");
+  }
+    ros::spinOnce();
+    loop_rate.sleep();  
+  }
 
   return 0;
 }

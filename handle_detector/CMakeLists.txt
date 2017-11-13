@@ -3,15 +3,17 @@ project(handle_detector)
 
 ## find catkin and required packages
 find_package(catkin REQUIRED COMPONENTS 
+  rospy
+  roscpp 
+  std_msgs 
+  tf
+  tf_conversions
   eigen_conversions 
   geometry_msgs 
-	message_generation   
-  roscpp 
-	pcl_ros
+  message_generation   
+  pcl_ros
   pcl_conversions
-  std_msgs 
-	tf
-	tf_conversions
+
   visualization_msgs)
 
 ## find Lapack
@@ -31,8 +33,16 @@ add_message_files(
   CylinderArrayMsg.msg
   HandleListMsg.msg
 )
-
-generate_messages(DEPENDENCIES geometry_msgs)
+add_service_files(
+   FILES
+   localize_handle.srv
+#   Service2.srv
+ )
+generate_messages(
+	DEPENDENCIES 
+	geometry_msgs    
+	std_msgs
+	   visualization_msgs)
 
 ## Declare a catkin package
 catkin_package(
@@ -57,6 +67,7 @@ include_directories(${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS} include)
 
 ## create executables
 add_executable(${PROJECT_NAME}_localization src/localization.cpp)
+add_dependencies(${PROJECT_NAME}_localization ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_executable(${PROJECT_NAME}_importance_sampling src/importance_sampling.cpp)
 
 ## create libraries

@@ -75,6 +75,8 @@ public:
     ros::Publisher handletarget_pub;
     ros::Publisher handlemiddletarget_pub;
 	ros::Publisher grasp_pub;
+	ros::ServiceClient client;
+	visualization_msgs::MarkerArray marker_update;
 	int index;
 	tf::TransformListener 	  listener;
 
@@ -87,20 +89,9 @@ public:
 	visualization_msgs::MarkerArray human_boxes_array;
 	bool OnceTargeted;
 
-	// void number_human_callback(const )
-	void global_pose_callback(const geometry_msgs::PoseStamped::ConstPtr& msg);
-	void Human_MarkerarrayCallback(const visualization_msgs::MarkerArray::ConstPtr& msg);
-	void joint_states_callback(const sensor_msgs::JointState::ConstPtr& msg);
-	void laser_scan_callback(const sensor_msgs::LaserScan::ConstPtr& msg);
-	void keyboard_callback(const keyboard::Key::ConstPtr& msg);
-    void grasp_point_callback(const geometry_msgs::PoseStamped::ConstPtr& msg);
-	void marker_array_callback(const visualization_msgs::MarkerArray::ConstPtr& msg);
-	
-	void Publish_visualized_marker_first(const geometry_msgs::PoseStamped Pose);
+	void marker_sorting(const visualization_msgs::MarkerArray msg);
+	void set_marker(const visualization_msgs::MarkerArray markersrv);
 	void Publish_visualized_marker(const geometry_msgs::PoseStamped Pose);
-	void getCameraregion();
-	bool getlinevalue(int line_type,double input_x, double input_y);
-	// void setViewpointTarget(const std::vector<double> pos);
 		
 
 };
