@@ -2,6 +2,8 @@
 #include <sensor_msgs/LaserScan.h>
 #include <std_msgs/Float32.h>
 #include <geometry_msgs/PoseArray.h>
+#include <visualization_msgs/MarkerArray.h>
+#include <visualization_msgs/Marker.h>
 #include <iostream>
 #include <cmath>
 #include <vector>
@@ -26,20 +28,11 @@
 #include <sensor_msgs/PointCloud2.h>
 #include "pcl_ros/point_cloud.h"
 
-/*boost::shared_ptr<pcl::visualization::PCLVisualizer>
-*/
-
 using namespace std;
 
 int dimcloud=0;
-
-
-
-
 bool sensor_on   = false;
-
 int g_counter = 0;
-
 
 vector < double >  laser_x;
 vector < double >  laser_y;
@@ -70,6 +63,8 @@ simpleVis (pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud)
 
 
 
+
+
 void RanSac(pcl::PointCloud<pcl::PointXYZ>::Ptr final);
 
 void LaserCallback (const sensor_msgs::LaserScan::ConstPtr& msg);
@@ -92,36 +87,42 @@ int main(int argc, char **argv){
 
   ros::init(argc, argv, "angle_detector");
   ros::NodeHandle n;
-// <<<<<<< HEAD
+
   ros::Publisher  angle_detector_pub = n.advertise <std_msgs::Float32>("angle_detector", 2);
+  ros::Publisher  AnglePoint_ref_pub=n.advertise <visualization_msgs::MarkerArray>("anglepoint_ref_markerarray", 2);
+  ros::Publisher  AnglePoint_cur_pub=n.advertise <visualization_msgs::MarkerArray>("anglepoint_cur_markerarray", 2);
+
+  visualization_msgs::MarkerArray ref_markerarray;
+  visualization_msgs::MarkerArray cur_markerarray;
+
+  visualization_msgs::Marker ref_marker;
+
   string laser_scan = "/hsrb/base_scan";
   ros::param::get("~laser_scan", laser_scan);
   ros::Subscriber node_sub = n.subscribe(laser_scan, 10, LaserCallback);
-// =======
-//   ros::Publisher  node_pub = n.advertise <std_msgs::Float32>("angle_detector", 2); // Humans in the environment
-//   // get param from launch file
-//   string laser_scan = "/hsrb/base_scan";
-//   ros::param::get("~laser_scan", laser_scan);
-//   ros::Subscriber node_sub = n.subscribe(laser_scan, 2, LaserCallback);
-// >>>>>>> 55e07bb0c363f2c657c9234a2bf62a782044b0ac
+
+
+
   geometry_msgs::PoseArray msgx;
 
   ros::Rate loop_rate(50);
   std_msgs::Float32 angle;
-// <<<<<<< HEAD
 
   bool door_first_found = false;
   int index = 1;
 
+  //definition of pointclouds
   pcl::PointCloud<pcl::PointXYZ>::Ptr final_closed (new pcl::PointCloud<pcl::PointXYZ>);
   pcl::PointCloud<pcl::PointXYZ>::Ptr final_open (new pcl::PointCloud<pcl::PointXYZ>);
 
-  ros::Publisher    pub ;
-  
+  // publisher of the current pointcloud
+  ros::Publisher  pub ;
   pub = n.advertise<pcl::PointCloud<pcl::PointXYZ> >("pointcloud_irene", 1);
+
   sensor_msgs::PointCloud2 PCLD;
   sensor_msgs::PointCloud2 PCLD2;
 
+  // vector parallel to the door
   std::vector<double> closed_door_vec;
   std::vector<double> open_door_vec;
 
@@ -146,13 +147,57 @@ int main(int argc, char **argv){
        closed_door_vec.resize(2);
        closed_door_vec[0]=laser_x[dimcloud-1]-laser_x[1];
        closed_door_vec[1]=laser_y[dimcloud-1]-laser_y[1];
+
+  
+        visualization_msgs::Marker visual_marker; 
+
+        visual_marker.header.frame_id = "base_range_sensor_link"; 
+        visual_marker.header.stamp = ros::Time::now();
+        visual_marker.id = 0;
+        uint32_t shape = visualization_msgs::Marker::SPHERE;
+        visual_marker.type = shape;
+
+        visual_marker.pose.position.x = laser_x[1];
+        visual_marker.pose.position.y = laser_y[1];
+        visual_marker.pose.position.z = 0.3;
+
+        visual_marker.pose.orientation.x = 0.0;
+        visual_marker.pose.orientation.y = 0.0;
+        visual_marker.pose.orientation.z = 0.0;
+        visual_marker.pose.orientation.w = 1.0;
+
+        double temp_dist=0.050;
+
+        //ROS_INFO("temp dist : %.3lf, temp dist2 : %.3lf, temp dist3 : %.3lf",temp_dist,temp_dist2,temp_dist3);
+        visual_marker.scale.x = std::abs(temp_dist);
+        visual_marker.scale.y = std::abs(temp_dist);
+        visual_marker.scale.z = std::abs(temp_dist);
+
+        visual_marker.color.r = 0.0;
+        visual_marker.color.g = 0.7;
+        visual_marker.color.b = 0.2;
+        visual_marker.color.a = 0.85;
+
+        ref_markerarray.markers.push_back(visual_marker);
+
+        visual_marker.id=1;
+        visual_marker.pose.position.x = laser_x[dimcloud-1];
+        visual_marker.pose.position.y = laser_y[dimcloud-1];
+        visual_marker.pose.position.z = 0.3;
+
+        visual_marker.color.r = 0.85;
+        visual_marker.color.g = 0.7;
+        visual_marker.color.b = 0.2;
+        visual_marker.color.a = 0.85;
+
+        ref_markerarray.markers.push_back(visual_marker);
        //ROS_INFO("point 1 : %lf, %lf \n", laser_x[1],laser_y[1]);
        //ROS_INFO("point 2 : %lf, %lf \n", laser_x[dimcloud-1],laser_y[dimcloud-1]);
 
        //WE SHOULD MAKE HIM TALK AND SAY ("CLOSED DOOR DETECTED")
-       ROS_INFO("closed door vector is : %f, %f \n", closed_door_vec[0],closed_door_vec[1]);
-
+       //ROS_INFO("closed door vector is : %f, %f \n", closed_door_vec[0],closed_door_vec[1]);
        door_first_found = true;
+
     }
 
     else if( sensor_on == true  && door_first_found == true){
@@ -160,9 +205,9 @@ int main(int argc, char **argv){
        //rospy.sleep(1.)
        RanSac(final_open);
 
-       final_closed->header.frame_id = "base_range_sensor_link";
-       final_closed->height = 1;
-       final_closed->width = dimcloud;
+       final_open->header.frame_id = "base_range_sensor_link";
+       final_open->height = 1;
+       final_open->width = dimcloud;
 
        //msg->points.push_back (final_closed);
        pcl::toROSMsg(*final_open, PCLD2);
@@ -175,7 +220,51 @@ int main(int argc, char **argv){
        open_door_vec[0]=laser_x[dimcloud-1]-laser_x[1];
        open_door_vec[1]=laser_y[dimcloud-1]-laser_y[1];
 
-  
+       cur_markerarray.markers.clear();
+
+        visualization_msgs::Marker visual_marker; 
+
+        visual_marker.header.frame_id = "base_range_sensor_link"; 
+        visual_marker.header.stamp = ros::Time::now();
+        visual_marker.id = 0;
+        uint32_t shape = visualization_msgs::Marker::SPHERE;
+        visual_marker.type = shape;
+
+        visual_marker.pose.position.x = laser_x[1];
+        visual_marker.pose.position.y = laser_y[1];
+        visual_marker.pose.position.z = 0.3;
+
+        visual_marker.pose.orientation.x = 0.0;
+        visual_marker.pose.orientation.y = 0.0;
+        visual_marker.pose.orientation.z = 0.0;
+        visual_marker.pose.orientation.w = 1.0;
+
+        double temp_dist=0.050;
+
+        //ROS_INFO("temp dist : %.3lf, temp dist2 : %.3lf, temp dist3 : %.3lf",temp_dist,temp_dist2,temp_dist3);
+        visual_marker.scale.x = std::abs(temp_dist);
+        visual_marker.scale.y = std::abs(temp_dist);
+        visual_marker.scale.z = std::abs(temp_dist);
+
+        visual_marker.color.r = 0.85;
+        visual_marker.color.g = 0.2;
+        visual_marker.color.b = 0.7;
+        visual_marker.color.a = 0.85;
+
+        cur_markerarray.markers.push_back(visual_marker);
+
+        visual_marker.id=1;
+        visual_marker.pose.position.x = laser_x[dimcloud-1];
+        visual_marker.pose.position.y = laser_y[dimcloud-1];
+        visual_marker.pose.position.z = 0.2;
+
+        visual_marker.color.r = 0.85;
+        visual_marker.color.g = 0.1;
+        visual_marker.color.b = 0.2;
+        visual_marker.color.a = 0.85;
+
+        cur_markerarray.markers.push_back(visual_marker);
+
        //ROS_INFO("point 1 : %lf, %lf \n", laser_x[1],laser_y[1]);
        //ROS_INFO("point 2 : %lf, %lf \n", laser_x[dimcloud-1],laser_y[dimcloud-1]);
        //ROS_INFO("open door vector is : %f, %f \n", open_door_vec[0],open_door_vec[1]);
@@ -193,6 +282,8 @@ int main(int argc, char **argv){
        printf("the angle is : %.3lf \n",angle);
     }
 
+    AnglePoint_cur_pub.publish(cur_markerarray);
+    AnglePoint_ref_pub.publish(ref_markerarray);
     ros::spinOnce();
     loop_rate.sleep();
   }
@@ -207,7 +298,6 @@ int main(int argc, char **argv){
 void LaserCallback (const sensor_msgs::LaserScan::ConstPtr& msg){
 
   //ROS_INFO("laser callback");
-
 
   // To get header data from sensor msg
   SensorMsg = *msg;
@@ -228,7 +318,7 @@ void LaserCallback (const sensor_msgs::LaserScan::ConstPtr& msg){
     pt = msg->angle_min + ( i * msg->angle_increment);
     px = pr * cos (pt);
     py = pr * sin(pt); 
-    if (  (pt < 0.80) && (pt > -0.45) )
+    if (  (pt < 0.80) && (pt > -0.10) )
     {
     	 laser_r.push_back( pr );
        laser_t.push_back( pt );
@@ -241,28 +331,11 @@ void LaserCallback (const sensor_msgs::LaserScan::ConstPtr& msg){
   
   dimcloud = laser_r.size();
   //std::cout<< msg->angle_min << std::endl;
-  // rec_x.clear(); 
-  // rec_y.clear(); 
-  
-  // sensor_on = true;
-  
-  // double px, py, pr, pt;
-  // vector < double >  laser_x;
-  // vector < double >  laser_y;
-  // vector < double >  laser_r;
-  // vector < double >  laser_t;
-  // for( unsigned i = 0; i < msg->ranges.size(); i++ ){    
-  //   pr = msg->ranges[ i ];
-  //   pt = msg->angle_min + ( i * msg->angle_increment);
-  //   laser_r.push_back( pr );
-  //   laser_t.push_back( pt );
-  // }
-
-	
 }
 
 
 void RanSac(pcl::PointCloud<pcl::PointXYZ>::Ptr final){
+ 
  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud (new pcl::PointCloud<pcl::PointXYZ>);
  
  cloud->width    = dimcloud;
@@ -273,6 +346,7 @@ void RanSac(pcl::PointCloud<pcl::PointXYZ>::Ptr final){
  //ROS_INFO("laser x, y size : %d, %d \n", laser_x.size(),laser_y.size());
  cloud->is_dense = false;
  cloud->points.resize (cloud->width * cloud->height);
+
  for (size_t i = 0; i < cloud->points.size (); ++i)
  {
  	     cloud->points[i].x = laser_x.at(i);
@@ -310,3 +384,6 @@ void RanSac(pcl::PointCloud<pcl::PointXYZ>::Ptr final){
 return;
 
 }
+
+
+

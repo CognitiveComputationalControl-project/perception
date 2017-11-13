@@ -6,6 +6,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   sensor_msgs
+  visualization_msgs
 )
 
 find_package(Boost REQUIRED COMPONENTS thread)
