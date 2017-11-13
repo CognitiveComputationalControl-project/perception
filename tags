@@ -51,6 +51,7 @@ LASER_ANGLE_STEP	handle_tracking/include/object_scan.h	60;"	d
 LASER_Data_Length	handle_tracking/include/object_scan.h	53;"	d
 LASER_Dist_person	handle_tracking/include/object_scan.h	55;"	d
 LASER_Point_Step	handle_tracking/include/object_scan.h	54;"	d
+LaserCallback	angle_detector/src/detector.cpp	/^void LaserCallback (const sensor_msgs::LaserScan::ConstPtr& msg){$/;"	f
 MARKER_FRAME	object_registration/src/interest_box_marker.cpp	21;"	d	file:
 MARKER_NAME	object_registration/src/interest_box_marker.cpp	22;"	d	file:
 MATH_PI	handle_tracking/include/object_scan.h	41;"	d
@@ -132,6 +133,7 @@ SUM	handle_detector/src/sampling.cpp	/^const int SUM = 1;$/;"	v
 Same_POS_diff	handle_tracking/include/object_scan.h	49;"	d
 Sampling	handle_detector/include/handle_detector/sampling.h	/^class Sampling$/;"	c
 SamplingVisualizer	handle_detector/include/handle_detector/sampling_visualizer.h	/^class SamplingVisualizer$/;"	c
+SensorMsg	angle_detector/src/detector.cpp	/^sensor_msgs::LaserScan SensorMsg;$/;"	v
 TARGET_RADIUS	handle_detector/include/handle_detector/affordances.h	/^		static const double TARGET_RADIUS; \/\/ approx. radius of the target handle$/;"	m	class:Affordances
 TARGET_RADIUS	handle_detector/src/affordances.cpp	/^const double Affordances::TARGET_RADIUS = 0.08;$/;"	m	class:Affordances	file:
 TAUBIN	handle_detector/src/affordances.cpp	/^const int TAUBIN = 0;$/;"	v
@@ -223,6 +225,7 @@ g_affordances	handle_detector/src/importance_sampling.cpp	/^Affordances g_afford
 g_affordances	handle_detector/src/localization.cpp	/^Affordances g_affordances;$/;"	v
 g_caught_sigint	handle_tracking/src/scanning_test.cpp	/^bool g_caught_sigint=false;$/;"	v
 g_caught_sigint	object_registration/src/interest_box_marker.cpp	/^bool g_caught_sigint = false;$/;"	v
+g_counter	angle_detector/src/detector.cpp	/^int g_counter = 0;$/;"	v
 g_cylindrical_shells	handle_detector/src/importance_sampling.cpp	/^std::vector<CylindricalShell> g_cylindrical_shells;$/;"	v
 g_cylindrical_shells	handle_detector/src/localization.cpp	/^std::vector<CylindricalShell> g_cylindrical_shells;$/;"	v
 g_handles	handle_detector/src/importance_sampling.cpp	/^std::vector<std::vector<CylindricalShell> > g_handles;$/;"	v
@@ -329,6 +332,7 @@ m_x_max	door_handle_detection/include/door_handle_detection.h	/^  double m_x_max
 m_x_min	door_handle_detection/include/door_handle_detection.h	/^  double m_x_min;$/;"	m	class:DoorHandleDetectionNode
 m_y_max	door_handle_detection/include/door_handle_detection.h	/^  double m_y_max;$/;"	m	class:DoorHandleDetectionNode
 m_y_min	door_handle_detection/include/door_handle_detection.h	/^  double m_y_min;$/;"	m	class:DoorHandleDetectionNode
+main	angle_detector/src/detector.cpp	/^int main(int argc, char **argv){$/;"	f
 main	door_handle_detection/src/door_handle_detection.cpp	/^int main( int argc, char** argv )$/;"	f
 main	door_recognition/src/findit.cpp	/^int main (int argc, char** argv)$/;"	f
 main	handle_detector/src/importance_sampling.cpp	/^int main(int argc, char** argv)$/;"	f
@@ -359,6 +363,7 @@ msg_trans	handle_detector/src/localization.cpp	/^geometry_msgs::Pose msg_trans;$
 msg_x	handle_detector/src/localization.cpp	/^double msg_x=0.0;$/;"	v
 msg_y	handle_detector/src/localization.cpp	/^double msg_y=0.0;$/;"	v
 msg_z	handle_detector/src/localization.cpp	/^double msg_z=0.0;$/;"	v
+mutex	angle_detector/src/detector.cpp	/^boost::mutex mutex;$/;"	v
 n	door_handle_detection/include/door_handle_detection.h	/^  ros::NodeHandle n;$/;"	m	class:DoorHandleDetectionNode
 neighborhood_centroid_index	handle_detector/include/handle_detector/cylindrical_shell.h	/^  int neighborhood_centroid_index;$/;"	m	class:CylindricalShell
 neighborhood_centroids_	handle_detector/include/handle_detector/curvature_estimation_taubin.h	/^  std::vector<int> neighborhood_centroids_; \/\/ list of point cloud indices corresponding to neighborhood centroids$/;"	m	class:pcl::CurvatureEstimationTaubin
@@ -401,6 +406,8 @@ qy	door_recognition/src/findit.cpp	/^double qy;$/;"	v
 qz	door_recognition/src/findit.cpp	/^double qz;$/;"	v
 radius	handle_detector/include/handle_detector/cylindrical_shell.h	/^  double radius;$/;"	m	class:CylindricalShell
 radius_error	handle_detector/include/handle_detector/affordances.h	/^		double radius_error;$/;"	m	class:Affordances
+rec_x	angle_detector/src/detector.cpp	/^vector < double > rec_x;$/;"	v
+rec_y	angle_detector/src/detector.cpp	/^vector < double > rec_y;$/;"	v
 rot2euler	door_handle_detection/src/door_handle_detection.cpp	/^cv::Mat rot2euler(const cv::Mat & rotationMatrix)$/;"	f
 run_icp_on_pc	object_registration/src/object_localize_service.cpp	/^void run_icp_on_pc(const PointCloudT::Ptr& cloud_in, $/;"	f
 scene_cloud_msg	object_registration/test/test_object_localize_service.cpp	/^sensor_msgs::PointCloud2 scene_cloud_msg;$/;"	v
@@ -409,6 +416,7 @@ searchAffordances	handle_detector/src/sampling.cpp	/^std::vector<CylindricalShel
 searchAffordancesNormalsOrPCA	handle_detector/src/affordances.cpp	/^std::vector<CylindricalShell> Affordances::searchAffordancesNormalsOrPCA(const PointCloud::Ptr &cloud,$/;"	f	class:Affordances
 searchAffordancesTaubin	handle_detector/src/affordances.cpp	/^std::vector<CylindricalShell> Affordances::searchAffordancesTaubin(const PointCloud::Ptr &cloud,$/;"	f	class:Affordances
 searchHandles	handle_detector/src/affordances.cpp	/^std::vector<std::vector<CylindricalShell> > Affordances::searchHandles(const PointCloud::Ptr &cloud,$/;"	f	class:Affordances
+sensor_frame_id	angle_detector/src/detector.cpp	/^string sensor_frame_id;$/;"	v
 server	object_registration/src/interest_box_marker.cpp	/^boost::shared_ptr<interactive_markers::InteractiveMarkerServer> server;$/;"	v
 setAffordances	handle_detector/include/handle_detector/sampling.h	/^  void setAffordances(Affordances &affordances)$/;"	f	class:Sampling
 setExtent	handle_detector/include/handle_detector/cylindrical_shell.h	/^  inline void setExtent(double extent)$/;"	f	class:CylindricalShell

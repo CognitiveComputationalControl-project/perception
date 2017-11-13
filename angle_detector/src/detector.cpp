@@ -297,7 +297,6 @@ int main(int argc, char **argv){
 
 void LaserCallback (const sensor_msgs::LaserScan::ConstPtr& msg){
 
-  //ROS_INFO("laser callback");
 
   // To get header data from sensor msg
   SensorMsg = *msg;
@@ -336,10 +335,10 @@ void LaserCallback (const sensor_msgs::LaserScan::ConstPtr& msg){
     }
     
   }
-
   
   dimcloud = laser_r.size();
-  //std::cout<< msg->angle_min << std::endl;
+
+
 }
 
 
