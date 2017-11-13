@@ -48,7 +48,10 @@ int main(int argc, char **argv){
 
       // save door
 
+
       //door_found = true;
+
+      door_first_found = true;
     }
     else if( sensor_on == true  && door_first_found == true){
       // update door
@@ -66,6 +69,7 @@ int main(int argc, char **argv){
 
 void LaserCallback (const sensor_msgs::LaserScan::ConstPtr& msg){
 
+/*
   // To get header data from sensor msg
   SensorMsg = *msg;
 
@@ -93,9 +97,17 @@ void LaserCallback (const sensor_msgs::LaserScan::ConstPtr& msg){
 //  As an example, to access one of these values, write : msg->angle_min
 
 //  You are only interested in the points which are between two angles,
-  //for( unsigned i = [> starting angle */; i < /* last angle <]; i++ ) 
+<<<<<<< HEAD
+  //for( unsigned i = [> starting angle ; i < /* last angle <]; i++ ) 
   //{    
       /*Save points*/
   //}
 	
+
+ /* for( unsigned i =  starting angle ; i < /* last angle *; i++ ) 
+  {    
+      /*Save points
+  }
+	
+*/
 }
