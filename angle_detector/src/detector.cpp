@@ -310,20 +310,29 @@ void LaserCallback (const sensor_msgs::LaserScan::ConstPtr& msg){
     
   sensor_on = true;
   
-  double px, py, pr, pt;
-
+  double px, py, pr, pt, k;
+  k = 0;
 
   for( unsigned i = 0; i < msg->ranges.size(); i++ ){    
     pr = msg->ranges[ i ];
     pt = msg->angle_min + ( i * msg->angle_increment);
     px = pr * cos (pt);
     py = pr * sin(pt); 
+
     if (  (pt < 0.80) && (pt > -0.10) )
     {
-    	 laser_r.push_back( pr );
-       laser_t.push_back( pt );
-	     laser_x.push_back( px );
-	     laser_y.push_back( py );
+       if (  (px-k) < 3   )  
+       {
+
+       k=0;
+       laser_x.push_back( px );
+       laser_r.push_back( pr );
+       laser_t.push_back( pt );       
+       laser_y.push_back( py );
+       k = px;
+
+       }
+
     }
     
   }
@@ -364,7 +373,14 @@ void RanSac(pcl::PointCloud<pcl::PointXYZ>::Ptr final){
  ransac.computeModel();
  ransac.getInliers(inliers); 
 // ROS_INFO("I am here");
+//for (size_t i = 1; i < cloud->points.size (); ++i)
+ //{
+  //     if (cloud->points[i].x) 
 
+   //     cloud->points[i-1].x - cloud->points[i] > laser_x.at(i);
+    //   cloud->points[i].y = laser_y.at(i);
+     //  cloud->points[i].z = 0.2;
+ //}
  // copies all inliers of the model computed to another PointCloud
  pcl::copyPointCloud<pcl::PointXYZ>(*cloud, inliers, *final);
 
