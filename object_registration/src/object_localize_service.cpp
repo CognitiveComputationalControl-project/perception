@@ -245,7 +245,7 @@ bool object_localize(const PointCloudT::Ptr& object_in, const PointCloudT::Ptr& 
 }
 
 // Test
-void test_simple_registration(){  
+/*void test_simple_registration(){  
   PointCloudT::Ptr object_in (new PointCloudT);
   PointCloudT::Ptr scene_in (new PointCloudT);
   pcl::console::print_highlight ("Loading point clouds...\n");
@@ -258,7 +258,7 @@ void test_simple_registration(){
 
   geometry_msgs::Pose relative_pose;
   object_localize(object_in, scene_in, relative_pose);
-}
+}*/
 
 bool localize_service(object_registration::ObjectLocalize::Request  &req,
                       object_registration::ObjectLocalize::Response &res){

@@ -9,7 +9,6 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 find_package(Boost REQUIRED COMPONENTS thread)
-
 find_package(PCL 1.7.2 REQUIRED)
 ###################################
 ## catkin specific configuration ##
@@ -28,6 +27,7 @@ include_directories(
   ${Boost_INCLUDE_DIRS}
 )
 
+
 include_directories(${PCL_INCLUDE_DIRS})
 link_directories(${PCL_LIBRARY_DIRS})
 add_definitions(${PCL_DEFINITIONS})
@@ -40,6 +40,7 @@ target_link_libraries(detector
   ${Boost_LIBRARIES}
   ${PCL_LIBRARIES}
 )
+
 
 
 

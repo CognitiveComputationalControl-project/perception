@@ -1,5 +1,0 @@
-<launch>
-    <node name="door_detector" pkg="door_recognition" type="door_detector.cpp" 
-   	output="screen"/>	
-
-</launch>

@@ -33,9 +33,13 @@ using namespace std;
 
 int dimcloud=0;
 
+
+
+
 bool sensor_on   = false;
 
 int g_counter = 0;
+
 
 vector < double >  laser_x;
 vector < double >  laser_y;
@@ -71,19 +75,40 @@ void RanSac(pcl::PointCloud<pcl::PointXYZ>::Ptr final);
 void LaserCallback (const sensor_msgs::LaserScan::ConstPtr& msg);
 
 
+// vector < double > rec_x;
+// vector < double > rec_y;
+// string sensor_frame_id;
+// sensor_msgs::LaserScan SensorMsg;
+// boost::mutex mutex;
+
+void LaserCallback (const sensor_msgs::LaserScan::ConstPtr& msg);
+
+// added by Ferdian Jovan
+// function to restrict a possibility of persons standing next to each other
+
+
 
 int main(int argc, char **argv){
 
   ros::init(argc, argv, "angle_detector");
   ros::NodeHandle n;
+// <<<<<<< HEAD
   ros::Publisher  angle_detector_pub = n.advertise <std_msgs::Float32>("angle_detector", 2);
   string laser_scan = "/hsrb/base_scan";
   ros::param::get("~laser_scan", laser_scan);
   ros::Subscriber node_sub = n.subscribe(laser_scan, 10, LaserCallback);
+// =======
+//   ros::Publisher  node_pub = n.advertise <std_msgs::Float32>("angle_detector", 2); // Humans in the environment
+//   // get param from launch file
+//   string laser_scan = "/hsrb/base_scan";
+//   ros::param::get("~laser_scan", laser_scan);
+//   ros::Subscriber node_sub = n.subscribe(laser_scan, 2, LaserCallback);
+// >>>>>>> 55e07bb0c363f2c657c9234a2bf62a782044b0ac
   geometry_msgs::PoseArray msgx;
 
   ros::Rate loop_rate(50);
   std_msgs::Float32 angle;
+// <<<<<<< HEAD
 
   bool door_first_found = false;
   int index = 1;
@@ -173,8 +198,8 @@ int main(int argc, char **argv){
   }
   
 
-    ros::spin();
-    loop_rate.sleep();
+  ros::spin();
+
   return 0;
 }
 
@@ -182,6 +207,8 @@ int main(int argc, char **argv){
 void LaserCallback (const sensor_msgs::LaserScan::ConstPtr& msg){
 
   //ROS_INFO("laser callback");
+
+
   // To get header data from sensor msg
   SensorMsg = *msg;
 
@@ -214,18 +241,23 @@ void LaserCallback (const sensor_msgs::LaserScan::ConstPtr& msg){
   
   dimcloud = laser_r.size();
   //std::cout<< msg->angle_min << std::endl;
+  // rec_x.clear(); 
+  // rec_y.clear(); 
+  
+  // sensor_on = true;
+  
+  // double px, py, pr, pt;
+  // vector < double >  laser_x;
+  // vector < double >  laser_y;
+  // vector < double >  laser_r;
+  // vector < double >  laser_t;
+  // for( unsigned i = 0; i < msg->ranges.size(); i++ ){    
+  //   pr = msg->ranges[ i ];
+  //   pt = msg->angle_min + ( i * msg->angle_increment);
+  //   laser_r.push_back( pr );
+  //   laser_t.push_back( pt );
+  // }
 
-//  float32 angle_min        # start angle of the scan [rad]
-//  float32 angle_max        # end angle of the scan [rad]
-//  float32 angle_increment  # angular distance between measurements [rad]
-//  As an example, to access one of these values, write : msg->angle_min
-
-//  You are only interested in the points which are between two angles,
-//for( unsigned i = /* starting angle */; i < /* last angle */; i++ ) 
-  //  {    
-      
-    /*Save points*/
- // }
 	
 }
 
@@ -276,4 +308,5 @@ void RanSac(pcl::PointCloud<pcl::PointXYZ>::Ptr final){
  // }
      
 return;
+
 }

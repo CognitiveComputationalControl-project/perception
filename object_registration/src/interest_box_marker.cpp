@@ -314,7 +314,25 @@ bool getCloudinBox(){
   std::cout << "Frame to publish: " <<  boxed_cloud->header.frame_id << std::endl;
 
   ROS_INFO("Filtered Cloud has: %zu points", boxed_cloud->points.size());
+/*  pcl::PointXYZRGB pt;
+  double sumx = 0;
+  double sumy = 0;
+  for (int i=0; i<boxed_cloud->points.size();i++)
+  {
+    pt = boxed_cloud->points[i];
+    sumx = sumx + pt.x;
+    sumy = sumy + pt.y;
+  }
 
+  double offsetx = sumx / boxed_cloud->points.size();
+  double offsety = sumy / boxed_cloud->points.size();
+  std::cout << "Mean of x is "<< offsetx << std::endl;
+  std::cout << "Mean of y is "<< offsety << std::endl;
+  for (int i=0; i<boxed_cloud->points.size();i++)
+  {
+    boxed_cloud->points[i].x = boxed_cloud->points[i].x - offsetx;
+    boxed_cloud->points[i].y = boxed_cloud->points[i].y - offsety;
+  }*/
   pointcloud_pub.publish(boxed_cloud);
   return true;
 }

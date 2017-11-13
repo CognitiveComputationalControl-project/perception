@@ -1,9 +1,0 @@
-<launch>
-   <node name="task1_auto_detect_cupboard_table_demo" pkg="villa_surface_detectors" type="task1_auto_detect_cupboard_table_demo.py" 
-   	output="screen"/>	
-
-  <include file="$(find villa_surface_detectors)/launch/detectors_services.launch"> 
-  </include>	
-
-
-</launch>
