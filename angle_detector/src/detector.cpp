@@ -33,6 +33,7 @@ using namespace std;
 int dimcloud=0;
 bool sensor_on   = false;
 int g_counter = 0;
+int door_start;
 
 vector < double >  laser_x;
 vector < double >  laser_y;
@@ -62,13 +63,9 @@ simpleVis (pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud)
 }
 
 
-
-
-
 void RanSac(pcl::PointCloud<pcl::PointXYZ>::Ptr final);
 
 void LaserCallback (const sensor_msgs::LaserScan::ConstPtr& msg);
-
 
 // vector < double > rec_x;
 // vector < double > rec_y;
@@ -78,8 +75,6 @@ void LaserCallback (const sensor_msgs::LaserScan::ConstPtr& msg);
 
 void LaserCallback (const sensor_msgs::LaserScan::ConstPtr& msg);
 
-// added by Ferdian Jovan
-// function to restrict a possibility of persons standing next to each other
 
 
 
@@ -92,16 +87,14 @@ int main(int argc, char **argv){
   ros::Publisher  AnglePoint_ref_pub=n.advertise <visualization_msgs::MarkerArray>("anglepoint_ref_markerarray", 2);
   ros::Publisher  AnglePoint_cur_pub=n.advertise <visualization_msgs::MarkerArray>("anglepoint_cur_markerarray", 2);
 
-  visualization_msgs::MarkerArray ref_markerarray;
-  visualization_msgs::MarkerArray cur_markerarray;
-
-  visualization_msgs::Marker ref_marker;
+  visualization_msgs::MarkerArray    ref_markerarray;
+  visualization_msgs::MarkerArray    cur_markerarray;
+  visualization_msgs::Marker         ref_marker;
 
   string laser_scan = "/hsrb/base_scan";
   ros::param::get("~laser_scan", laser_scan);
-  ros::Subscriber node_sub = n.subscribe(laser_scan, 10, LaserCallback);
 
-
+  ros::Subscriber    node_sub = n.subscribe(laser_scan, 10, LaserCallback);
 
   geometry_msgs::PoseArray msgx;
 
@@ -114,6 +107,7 @@ int main(int argc, char **argv){
   //definition of pointclouds
   pcl::PointCloud<pcl::PointXYZ>::Ptr final_closed (new pcl::PointCloud<pcl::PointXYZ>);
   pcl::PointCloud<pcl::PointXYZ>::Ptr final_open (new pcl::PointCloud<pcl::PointXYZ>);
+
 
   // publisher of the current pointcloud
   ros::Publisher  pub ;
@@ -159,8 +153,7 @@ int main(int argc, char **argv){
 
         visual_marker.pose.position.x = laser_x[1];
         visual_marker.pose.position.y = laser_y[1];
-        visual_marker.pose.position.z = 0.3;
-
+        visual_marker.pose.position.z = 0.2;
         visual_marker.pose.orientation.x = 0.0;
         visual_marker.pose.orientation.y = 0.0;
         visual_marker.pose.orientation.z = 0.0;
@@ -172,7 +165,6 @@ int main(int argc, char **argv){
         visual_marker.scale.x = std::abs(temp_dist);
         visual_marker.scale.y = std::abs(temp_dist);
         visual_marker.scale.z = std::abs(temp_dist);
-
         visual_marker.color.r = 0.0;
         visual_marker.color.g = 0.7;
         visual_marker.color.b = 0.2;
@@ -183,8 +175,7 @@ int main(int argc, char **argv){
         visual_marker.id=1;
         visual_marker.pose.position.x = laser_x[dimcloud-1];
         visual_marker.pose.position.y = laser_y[dimcloud-1];
-        visual_marker.pose.position.z = 0.3;
-
+        visual_marker.pose.position.z = 0.2;
         visual_marker.color.r = 0.85;
         visual_marker.color.g = 0.7;
         visual_marker.color.b = 0.2;
@@ -193,15 +184,13 @@ int main(int argc, char **argv){
         ref_markerarray.markers.push_back(visual_marker);
        //ROS_INFO("point 1 : %lf, %lf \n", laser_x[1],laser_y[1]);
        //ROS_INFO("point 2 : %lf, %lf \n", laser_x[dimcloud-1],laser_y[dimcloud-1]);
-
-       //WE SHOULD MAKE HIM TALK AND SAY ("CLOSED DOOR DETECTED")
        //ROS_INFO("closed door vector is : %f, %f \n", closed_door_vec[0],closed_door_vec[1]);
        door_first_found = true;
 
     }
 
     else if( sensor_on == true  && door_first_found == true){
-      // update door
+   
        //rospy.sleep(1.)
        RanSac(final_open);
 
@@ -213,12 +202,13 @@ int main(int argc, char **argv){
        pcl::toROSMsg(*final_open, PCLD2);
        pub.publish(PCLD2);
 
-       // create the vector that follows the door direction 
+
        
 
        open_door_vec.resize(2);
        open_door_vec[0]=laser_x[dimcloud-1]-laser_x[1];
        open_door_vec[1]=laser_y[dimcloud-1]-laser_y[1];
+
 
        cur_markerarray.markers.clear();
 
@@ -233,7 +223,6 @@ int main(int argc, char **argv){
         visual_marker.pose.position.x = laser_x[1];
         visual_marker.pose.position.y = laser_y[1];
         visual_marker.pose.position.z = 0.3;
-
         visual_marker.pose.orientation.x = 0.0;
         visual_marker.pose.orientation.y = 0.0;
         visual_marker.pose.orientation.z = 0.0;
@@ -245,7 +234,6 @@ int main(int argc, char **argv){
         visual_marker.scale.x = std::abs(temp_dist);
         visual_marker.scale.y = std::abs(temp_dist);
         visual_marker.scale.z = std::abs(temp_dist);
-
         visual_marker.color.r = 0.85;
         visual_marker.color.g = 0.2;
         visual_marker.color.b = 0.7;
@@ -256,8 +244,7 @@ int main(int argc, char **argv){
         visual_marker.id=1;
         visual_marker.pose.position.x = laser_x[dimcloud-1];
         visual_marker.pose.position.y = laser_y[dimcloud-1];
-        visual_marker.pose.position.z = 0.2;
-
+        visual_marker.pose.position.z = 0.3;
         visual_marker.color.r = 0.85;
         visual_marker.color.g = 0.1;
         visual_marker.color.b = 0.2;
@@ -269,7 +256,6 @@ int main(int argc, char **argv){
        //ROS_INFO("point 2 : %lf, %lf \n", laser_x[dimcloud-1],laser_y[dimcloud-1]);
        //ROS_INFO("open door vector is : %f, %f \n", open_door_vec[0],open_door_vec[1]);
 
-      // publish door
       //angle_detector_pub.publish( angle );
        double dot=0.0;
        double det=0.0;
@@ -278,7 +264,7 @@ int main(int argc, char **argv){
 
        dot = closed_door_vec[0]*open_door_vec[0] + closed_door_vec[1]*open_door_vec[1];
        det = closed_door_vec[0]*open_door_vec[1] - closed_door_vec[1]*open_door_vec[0];
-       angle = static_cast<double> (atan2(det, dot)*360/3.141592);
+       angle = static_cast<double> (atan2(det, dot)*360/(2*(3.141592)) );
        printf("the angle is : %.3lf \n",angle);
     }
 
@@ -318,7 +304,7 @@ void LaserCallback (const sensor_msgs::LaserScan::ConstPtr& msg){
     px = pr * cos (pt);
     py = pr * sin(pt); 
 
-    if (  (pt < 0.80) && (pt > -0.10) )
+    if (  (pt < 0.30) && (pt > -0.48) )
     {
        if (  (px-k) < 3   )  
        {
