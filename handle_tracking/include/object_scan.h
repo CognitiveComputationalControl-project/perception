@@ -33,7 +33,8 @@
 #include <pcl_ros/point_cloud.h>
 #include <pcl/point_types.h>
 #include <pcl/kdtree/kdtree.h>
-
+#include "handle_detector/localize_handle.h"
+#include "handle_tracking/objectfinder.h"
 
 
 
@@ -76,10 +77,12 @@ public:
     ros::Publisher handlemiddletarget_pub;
 	ros::Publisher grasp_pub;
 	ros::ServiceClient client;
+	ros::ServiceClient service;
 	visualization_msgs::MarkerArray marker_update;
 	int index;
 	tf::TransformListener 	  listener;
-
+	handle_detector::localize_handle srv;
+	handle_tracking::objectfinder srv_find;
 	std::vector<double> Robot_Pos;				//x,y,theta
 	std::vector<double> Head_Pos;				//x,y,theta
 	std::vector<double> global_pose;
@@ -92,6 +95,7 @@ public:
 	void marker_sorting(const visualization_msgs::MarkerArray msg);
 	void set_marker(const visualization_msgs::MarkerArray markersrv);
 	void Publish_visualized_marker(const geometry_msgs::PoseStamped Pose);
-		
+	void cloud_callback(const sensor_msgs::PointCloud2ConstPtr& input);
+	bool track_handle(handle_tracking::objectfinder::Request  &req,handle_tracking::objectfinder::Response &res);
 
 };

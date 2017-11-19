@@ -1,4 +1,4 @@
 bool handle_used
+sensor_msgs/PointCloud2 pointcloud_data
 ---
-bool handle_candidate
 visualization_msgs/MarkerArray handle_marker

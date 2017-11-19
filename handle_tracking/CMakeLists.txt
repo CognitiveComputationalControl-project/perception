@@ -33,6 +33,7 @@ generate_messages(
    geometry_msgs
    std_msgs
    std_srvs
+   sensor_msgs
    visualization_msgs
 )
 
@@ -66,3 +67,7 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 add_executable(scanner src/scanning_test.cpp ${SOURCES})
 add_dependencies(scanner ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(scanner ${catkin_LIBRARIES} ${PCL_LIBRARIES})
+
+add_executable(scanner_running src/object_scan.cpp ${SOURCES})
+add_dependencies(scanner_running ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(scanner_running ${catkin_LIBRARIES} ${PCL_LIBRARIES})

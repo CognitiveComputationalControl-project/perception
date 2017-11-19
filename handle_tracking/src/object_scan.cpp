@@ -1,5 +1,6 @@
 #include "object_scan.h"
-
+#include "handle_detector/localize_handle.h"
+#include "handle_tracking/objectfinder.h"
 
 Handle_manager::~Handle_manager(){}
 Handle_manager::Handle_manager()
@@ -8,14 +9,47 @@ Handle_manager::Handle_manager()
     
 }
 
+void Handle_manager::cloud_callback(const sensor_msgs::PointCloud2ConstPtr& input)
+{
+  srv.request.pointcloud_data = *input;
+}
 
+bool Handle_manager::track_handle(handle_tracking::objectfinder::Request  &req,
+         handle_tracking::objectfinder::Response &res)
+{
+  int found = 0;
+  while (ros::ok())
+  {
+  if (found > 10){
+    ROS_INFO("breaking");
+    break;
+  }
+  else if(srv.request.pointcloud_data.data.size()>0)
+  {
+    ROS_INFO("pointcloud passed");
+
+   if (client.call(srv))
+    {
+      if (srv.response.handle_marker.markers.size()!=0)
+      {
+        ROS_INFO("marker received");
+        set_marker(srv.response.handle_marker);
+        found+=1;
+        std::cout<<found<<std::endl;
+      }
+    }
+  } 
+  ros::spinOnce();
+  loop_rate.sleep();  
+  }
+  return true;
+}
 
 void Handle_manager::set_marker(const visualization_msgs::MarkerArray markersrv)
 {
     marker_update = markersrv;
     marker_sorting(marker_update);
 }
-
 
 void Handle_manager::Publish_visualized_marker(const geometry_msgs::PoseStamped Pose)
 {

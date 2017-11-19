@@ -1,3 +1,2 @@
 ---
-geometry_msgs/PoseArray Object_array
-bool IsObject
+visualization_msgs/MarkerArray handle_marker
