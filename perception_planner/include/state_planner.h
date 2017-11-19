@@ -24,20 +24,17 @@
 #include <sensor_msgs/PointCloud2.h>
 #include <sensor_msgs/LaserScan.h>
 #include <keyboard/Key.h>
-
 #include "visualization_msgs/Marker.h"
 #include "visualization_msgs/MarkerArray.h"
 #include <nav_msgs/OccupancyGrid.h>
 #include <nav_msgs/Odometry.h>
 #include <move_base_msgs/MoveBaseActionGoal.h>
 
-
 class state_planner{
 
 public:
 	state_planner();
 	~state_planner();
-
 
     ros::Publisher states_pub;
     ros::Publisher action_pub;
@@ -47,12 +44,9 @@ public:
 	int index;
 	tf::TransformListener 	  listener;
 	int current_state;
-
 	
 	void update_state();
 	void set_state();
 	void print_state();
 	// void Publish_visualized_marker(const geometry_msgs::PoseStamped Pose);
-		
-
 };
