@@ -13,50 +13,25 @@
 #include <boost/thread/thread.hpp>
 
 
-
-using namespace Eigen;
-
-
-
-int num_x=12;
-int num_y=12;
-ros::Rate loop_rate(10);
-
-//variables & functions for service
-bool g_caught_sigint=false;
-
-void sig_handler(int sig)
-{
-  g_caught_sigint = true;
-  ROS_INFO("caught sigint, init shutdown sequence...");
-  ros::shutdown();
-  exit(1);
-};
-
-
-
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "Human_scanner");
 
   Handle_manager object_tracker;
   
-  // ros::Subscriber Object_detected_sub;  
-  ros::Subscriber Detected_handle_sub;
-  ros::Subscriber Marker_array_sub;
-  ros::Subscriber sub;
-  ros::NodeHandle n;
-  object_tracker.handletarget_pub=n.advertise<visualization_msgs::Marker>("/detected_final_handle_marker",50,true);
-  object_tracker.grasp_pub = n.advertise<geometry_msgs::PoseStamped> ("handle_detector/grasp_point", 10,true);
+  object_tracker.handletarget_pub = object_tracker.n.advertise<visualization_msgs::Marker>("/detected_final_handle_marker",50,true);
+  object_tracker.grasp_pub = object_tracker.n.advertise<geometry_msgs::PoseStamped> ("handle_detector/grasp_point", 10,true);
 
-  object_tracker.sub = n.subscribe("/hsrb/head_rgbd_sensor/depth_registered/rectified_points", 10, cloud_callback);
-  object_tracker.client = n.serviceClient<handle_detector::localize_handle>("localization/localize_handle");
-  object_tracker.service = node.advertiseService("track_handle", track_handle);  
+  object_tracker.sub = object_tracker.n.subscribe<sensor_msgs::PointCloud2>("/hsrb/head_rgbd_sensor/depth_registered/rectified_points", 10, boost::bind(&Handle_manager::cloud_callback, &object_tracker, _1));
 
+  object_tracker.client = object_tracker.n.serviceClient<handle_detector::localize_handle>("localization/localize_handle");
+  object_tracker.service = object_tracker.n.advertiseService<handle_tracking::objectfinder::Request, handle_tracking::objectfinder::Response>("track_handle",boost::bind(&Handle_manager::track_handle, &object_tracker,(handle_tracking::objectfinder::Request &) _1,  (handle_tracking::objectfinder::Response &) _2));  
+
+  ros::Rate loop(10);
   while(ros::ok())
   {
     ros::spinOnce();
-    loop_rate.sleep();  
+    loop.sleep();  
   }
   return 0;
 }

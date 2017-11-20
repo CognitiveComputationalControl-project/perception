@@ -76,8 +76,11 @@ public:
     ros::Publisher handletarget_pub;
     ros::Publisher handlemiddletarget_pub;
 	ros::Publisher grasp_pub;
+	ros::Subscriber sub;
 	ros::ServiceClient client;
-	ros::ServiceClient service;
+	ros::ServiceServer service;
+  	ros::NodeHandle n;
+
 	visualization_msgs::MarkerArray marker_update;
 	int index;
 	tf::TransformListener 	  listener;

@@ -17,6 +17,7 @@ void Handle_manager::cloud_callback(const sensor_msgs::PointCloud2ConstPtr& inpu
 bool Handle_manager::track_handle(handle_tracking::objectfinder::Request  &req,
          handle_tracking::objectfinder::Response &res)
 {
+  ros::Rate loop_rate(10);
   int found = 0;
   while (ros::ok())
   {
