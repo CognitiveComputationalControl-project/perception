@@ -1,2 +1,3 @@
+bool entry
 ---
-visualization_msgs/MarkerArray handle_marker
+geometry_msgs/PoseStamped best_grasp_pose

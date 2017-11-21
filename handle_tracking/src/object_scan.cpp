@@ -17,6 +17,7 @@ void Handle_manager::cloud_callback(const sensor_msgs::PointCloud2ConstPtr& inpu
 bool Handle_manager::track_handle(handle_tracking::objectfinder::Request  &req,
          handle_tracking::objectfinder::Response &res)
 {
+    std::cout << req.entry << std::endl;
   ros::Rate loop_rate(10);
   int found = 0;
   while (ros::ok())
@@ -43,6 +44,9 @@ bool Handle_manager::track_handle(handle_tracking::objectfinder::Request  &req,
   ros::spinOnce();
   loop_rate.sleep();  
   }
+
+  res.best_grasp_pose = grasp_transformed_pose;
+
   return true;
 }
 
@@ -123,6 +127,6 @@ void Handle_manager::marker_sorting(const visualization_msgs::MarkerArray msg)
     grasp_transformed_pose.header.stamp=ros::Time::now();
     grasp_transformed_pose.header.frame_id="odom";
     Publish_visualized_marker(grasp_transformed_pose);
-    grasp_pub.publish(grasp_transformed_pose);
-
+/*    grasp_pub.publish(grasp_transformed_pose);
+*/
 }
