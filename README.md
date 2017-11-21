@@ -10,4 +10,4 @@ rosrun handle_tracking scanner
 
 # To call the series of services : 
 
-rosservice call track_handle "entre: false"
+rosservice call track_handle "entry: false"
