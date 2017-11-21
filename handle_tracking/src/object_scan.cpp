@@ -15,9 +15,10 @@ void Handle_manager::cloud_callback(const sensor_msgs::PointCloud2ConstPtr& inpu
 }
 
 bool Handle_manager::track_handle(handle_tracking::objectfinder::Request  &req,
-         handle_tracking::objectfinder::Response &res)
+handle_tracking::objectfinder::Response &res)
 {
-    std::cout << req.entry << std::endl;
+  sub = n.subscribe<sensor_msgs::PointCloud2>("/hsrb/head_rgbd_sensor/depth_registered/rectified_points", 
+                                                                            10, &Handle_manager::cloud_callback,this);
   ros::Rate loop_rate(10);
   int found = 0;
   while (ros::ok())
@@ -46,7 +47,9 @@ bool Handle_manager::track_handle(handle_tracking::objectfinder::Request  &req,
   }
 
   res.best_grasp_pose = grasp_transformed_pose;
-
+/*  object_tracker.sub = object_tracker.n.subscribe<sensor_msgs::PointCloud2>("/hsrb/head_rgbd_sensor/depth_registered/rectified_points", 
+                                                                            10, boost::bind(&Handle_manager::cloud_callback, &object_tracker, _1));*/
+sub.shutdown();
   return true;
 }
 
