@@ -60,6 +60,17 @@ ros::ServiceServer service;
 bool localize(handle_detector::localize_handle::Request  &req, handle_detector::localize_handle::Response &res)
 {
   ROS_INFO("localization service launched");
+  tf::TransformListener transform_listener;
+  while(ros::ok()){
+    try{ 
+    transform_listener.waitForTransform(BASE_FRAME, RANGE_SENSOR_FRAME,ros::Time(0), ros::Duration(3));
+    transform_listener.lookupTransform(BASE_FRAME, RANGE_SENSOR_FRAME, ros::Time(0), g_transform);
+    ROS_INFO("transform sensor to base found");
+    break;
+    }   
+    catch (tf::TransformException &ex){
+    }
+  }    
   Visualizer visualizer(g_update_interval);
   std::vector<visualization_msgs::MarkerArray> marker_arrays;
   visualization_msgs::MarkerArray marker_array_msg_handles;
@@ -96,29 +107,13 @@ int main(int argc, char** argv)
   // initialize ROS
   ros  ::init(argc, argv, "localization");
   ros::NodeHandle node("~");
-  // set point cloud source from launch file
-/*  int point_cloud_source;
-*//*  node.param("point_cloud_source", point_cloud_source, SENSOR);
-*//*  printf("point cloud source: %i\n", point_cloud_source);
-*/  // set point cloud update interval from launch file
-/*  node.param("update_interval", g_update_interval, 10.0);
-*/  // read parameters
+
   g_affordances.initParams(node);
 
   service = node.advertiseService("localize_handle", localize);  
 
   // wait for and then lookup transform between camera frame and base frame
-  tf::TransformListener transform_listener;
-  while(ros::ok()){
-    // create subscriber for camera topic
-    try{ 
-    transform_listener.waitForTransform(BASE_FRAME, RANGE_SENSOR_FRAME,ros::Time(0), ros::Duration(3));
-    transform_listener.lookupTransform(BASE_FRAME, RANGE_SENSOR_FRAME, ros::Time(0), g_transform);
-    break;
-    }   
-    catch (tf::TransformException &ex){
-    }
-  }                                                                                         
+                                                                                     
   // how often things are published
   ROS_INFO("Ready to localize");
   ros::Rate r(10);

@@ -80,7 +80,10 @@ public:
 	ros::ServiceClient client;
 	ros::ServiceServer service;
   	ros::NodeHandle n;
-
+	#define MAP_FRAME "map"
+	#define RANGE_SENSOR_FRAME "head_rgbd_sensor_rgb_frame"
+	#define BASE_FRAME "base_link"
+    std::string MARKER_FRAME;
 	visualization_msgs::MarkerArray marker_update;
 	int index;
 	tf::TransformListener 	  listener;
@@ -89,7 +92,7 @@ public:
 	std::vector<double> Robot_Pos;				//x,y,theta
 	std::vector<double> Head_Pos;				//x,y,theta
 	std::vector<double> global_pose;
-	double x_left;
+	double y_left;
 	geometry_msgs::PoseStamped grasp_pose;
 	geometry_msgs::PoseStamped grasp_transformed_pose;
 	visualization_msgs::MarkerArray human_boxes_array;

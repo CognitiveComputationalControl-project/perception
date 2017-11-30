@@ -1,11 +1,12 @@
 #include "object_scan.h"
 #include "handle_detector/localize_handle.h"
 #include "handle_tracking/objectfinder.h"
-
+#include <string>
+#include <iostream>
 Handle_manager::~Handle_manager(){}
 Handle_manager::Handle_manager()
 {
-    x_left= 1000;
+    y_left= -1000;
     
 }
 
@@ -48,15 +49,13 @@ handle_tracking::objectfinder::Response &res)
   }
 
   res.best_grasp_pose = grasp_transformed_pose;
-/*  object_tracker.sub = object_tracker.n.subscribe<sensor_msgs::PointCloud2>("/hsrb/head_rgbd_sensor/depth_registered/rectified_points", 
-                                                                            10, boost::bind(&Handle_manager::cloud_callback, &object_tracker, _1));*/
-sub.shutdown();
+  sub.shutdown();
   return true;
 }
 
 void Handle_manager::set_marker(const visualization_msgs::MarkerArray markersrv)
 {
-    marker_update = markersrv;
+    marker_update = markersrv; // frame_id -> head
 }
 
 void Handle_manager::Publish_visualized_marker(const geometry_msgs::PoseStamped Pose)
@@ -98,31 +97,31 @@ void Handle_manager::Publish_visualized_marker(const geometry_msgs::PoseStamped 
 
 void Handle_manager::marker_sorting(const visualization_msgs::MarkerArray msg)
 {
-  ROS_INFO("%d", marker_update.markers.size());
+  ROS_INFO("%d marker candidates", marker_update.markers.size());
   for (int i = 0 ; i < marker_update.markers.size(); i++)
   {
 
     grasp_pose.header.stamp = ros::Time::now();
-    grasp_pose.header.frame_id = "head_rgbd_sensor_rgb_frame";
+    grasp_pose.header.frame_id = RANGE_SENSOR_FRAME;
     grasp_pose.pose = marker_update.markers[i].pose;
     grasp_pose.header = marker_update.markers[i].header;
     //transform
     tf::StampedTransform transform_sensor_base;
-    listener.waitForTransform("head_rgbd_sensor_rgb_frame","odom",  ros::Time(0), ros::Duration(3.0));
+    listener.waitForTransform(RANGE_SENSOR_FRAME,MAP_FRAME,  ros::Time(0), ros::Duration(3.0));
     int ite = 0;
     while (ros::ok() && ite < 20)
     {
       try
       { 
-        listener.lookupTransform("head_rgbd_sensor_rgb_frame","odom", ros::Time(0), transform_sensor_base);
-        listener.transformPose (std::string("odom"), grasp_pose,  grasp_transformed_pose) ; 
+        listener.lookupTransform(RANGE_SENSOR_FRAME,MAP_FRAME, ros::Time(0), transform_sensor_base);
+        listener.transformPose (MAP_FRAME, grasp_pose,  grasp_transformed_pose) ; 
         grasp_transformed_pose.header.stamp=ros::Time::now();
-        grasp_transformed_pose.header.frame_id="odom";
-        if ( (x_left > grasp_transformed_pose.pose.position.x) && (fabs(grasp_transformed_pose.pose.position.z-0.94)<0.05) )
+        grasp_transformed_pose.header.frame_id=MAP_FRAME;
+        if ( (y_left < grasp_transformed_pose.pose.position.y) && (fabs(grasp_transformed_pose.pose.position.z-0.93)<0.02) )
         { 
           ROS_INFO("_x : %.3lf, _y : %.3lf, _z : %.3lf \n ", grasp_transformed_pose.pose.position.x, grasp_transformed_pose.pose.position.y, grasp_transformed_pose.pose.position.z) ; 
           Publish_visualized_marker(grasp_transformed_pose);
-          x_left = grasp_transformed_pose.pose.position.x;
+          y_left = grasp_transformed_pose.pose.position.y;
           break;
         }
       }   
@@ -130,7 +129,7 @@ void Handle_manager::marker_sorting(const visualization_msgs::MarkerArray msg)
       }
       ite = ite +1;
     }
-            std::cout <<grasp_transformed_pose.pose.position.z << " aaaaaaand " << fabs(grasp_transformed_pose.pose.position.z-0.94)<<std::endl;
-
+/*    std::cout << "considered candidates are : " <<grasp_transformed_pose.pose.position.z << " and " << fabs(grasp_transformed_pose.pose.position.z-0.94)<<std::endl;
+*/
   }
 }

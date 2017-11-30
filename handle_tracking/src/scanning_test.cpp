@@ -22,8 +22,7 @@ int main(int argc, char **argv)
   
   object_tracker.handletarget_pub = object_tracker.n.advertise<visualization_msgs::Marker>("/detected_final_handle_marker",50,true);
 
-/*  object_tracker.sub = object_tracker.n.subscribe<sensor_msgs::PointCloud2>("/hsrb/head_rgbd_sensor/depth_registered/rectified_points", 10, boost::bind(&Handle_manager::cloud_callback, &object_tracker, _1));
-*/  object_tracker.client = object_tracker.n.serviceClient<handle_detector::localize_handle>("localization/localize_handle");
+  object_tracker.client = object_tracker.n.serviceClient<handle_detector::localize_handle>("localization/localize_handle");
  
   object_tracker.service = object_tracker.n.advertiseService<handle_tracking::objectfinder::Request, handle_tracking::objectfinder::Response>("track_handle",boost::bind(&Handle_manager::track_handle, &object_tracker, _1,  _2));  
   
