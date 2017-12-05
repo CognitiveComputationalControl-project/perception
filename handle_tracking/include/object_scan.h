@@ -97,7 +97,7 @@ public:
 	geometry_msgs::PoseStamped grasp_transformed_pose;
 	visualization_msgs::MarkerArray human_boxes_array;
 	bool OnceTargeted;
-
+	bool handle_found = false;
 	void marker_sorting(const visualization_msgs::MarkerArray msg);
 	void set_marker(const visualization_msgs::MarkerArray markersrv);
 	void Publish_visualized_marker(const geometry_msgs::PoseStamped Pose);

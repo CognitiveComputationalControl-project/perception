@@ -18,8 +18,9 @@ void Handle_manager::cloud_callback(const sensor_msgs::PointCloud2ConstPtr& inpu
 bool Handle_manager::track_handle(handle_tracking::objectfinder::Request  &req,
 handle_tracking::objectfinder::Response &res)
 {
+  handle_found = false;
   sub = n.subscribe<sensor_msgs::PointCloud2>("/hsrb/head_rgbd_sensor/depth_registered/rectified_points", 
-                                                                            10, &Handle_manager::cloud_callback,this);
+                                                                       10, &Handle_manager::cloud_callback,this);
   ros::Rate loop_rate(10);
   int found = 0;
   while (ros::ok())
@@ -47,7 +48,7 @@ handle_tracking::objectfinder::Response &res)
   ros::spinOnce();
   loop_rate.sleep();  
   }
-
+  res.handle_is_found = handle_found;
   res.best_grasp_pose = grasp_transformed_pose;
   sub.shutdown();
   return true;
@@ -122,6 +123,7 @@ void Handle_manager::marker_sorting(const visualization_msgs::MarkerArray msg)
           ROS_INFO("_x : %.3lf, _y : %.3lf, _z : %.3lf \n ", grasp_transformed_pose.pose.position.x, grasp_transformed_pose.pose.position.y, grasp_transformed_pose.pose.position.z) ; 
           Publish_visualized_marker(grasp_transformed_pose);
           y_left = grasp_transformed_pose.pose.position.y;
+          handle_found = true;
           break;
         }
       }   

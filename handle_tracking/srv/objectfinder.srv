@@ -1,3 +1,4 @@
 bool entry
 ---
 geometry_msgs/PoseStamped best_grasp_pose
+bool handle_is_found
