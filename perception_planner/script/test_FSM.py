@@ -57,6 +57,7 @@ class Char(object):
 if __name__=="__main__":
 	rospy.init_node('Finite_State_Machine')
 	Door = Char()
+        print("Start")
 
 	Door.FSM.states["Open"]=Open()
 	Door.FSM.states["Closed"]=Closed()
@@ -73,6 +74,8 @@ if __name__=="__main__":
 		timeInterval=1
 		while(startTime+timeInterval > clock()):
 			pass
+                randnum=randint(0,2)
+                print randnum
 		if(randint(0,2)):
 			if(Door.FullOpen):
 				Door.FSM.Transition("toHalfOpen")
