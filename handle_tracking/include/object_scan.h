@@ -95,6 +95,8 @@ public:
 	double y_left;
 	geometry_msgs::PoseStamped grasp_pose;
 	geometry_msgs::PoseStamped grasp_transformed_pose;
+	geometry_msgs::PoseStamped temp_grasp_transformed_pose;
+
 	visualization_msgs::MarkerArray human_boxes_array;
 	bool OnceTargeted;
 	bool handle_found = false;

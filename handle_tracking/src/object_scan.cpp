@@ -115,14 +115,16 @@ void Handle_manager::marker_sorting(const visualization_msgs::MarkerArray msg)
       try
       { 
         listener.lookupTransform(RANGE_SENSOR_FRAME,MAP_FRAME, ros::Time(0), transform_sensor_base);
-        listener.transformPose (MAP_FRAME, grasp_pose,  grasp_transformed_pose) ; 
-        grasp_transformed_pose.header.stamp=ros::Time::now();
-        grasp_transformed_pose.header.frame_id=MAP_FRAME;
-        if ( (y_left < grasp_transformed_pose.pose.position.y) && (fabs(grasp_transformed_pose.pose.position.z-0.93)<0.02) )
+//        listener.transformPose (MAP_FRAME, grasp_pose,  grasp_transformed_pose) ; 
+        listener.transformPose (MAP_FRAME, grasp_pose,  temp_grasp_transformed_pose) ;
+        temp_grasp_transformed_pose.header.stamp=ros::Time::now();
+        temp_grasp_transformed_pose.header.frame_id=MAP_FRAME;
+        if ( (y_left < temp_grasp_transformed_pose.pose.position.y) && (fabs(temp_grasp_transformed_pose.pose.position.z-0.93)<0.02) )
         { 
-          ROS_INFO("_x : %.3lf, _y : %.3lf, _z : %.3lf \n ", grasp_transformed_pose.pose.position.x, grasp_transformed_pose.pose.position.y, grasp_transformed_pose.pose.position.z) ; 
-          Publish_visualized_marker(grasp_transformed_pose);
-          y_left = grasp_transformed_pose.pose.position.y;
+          ROS_INFO("_x : %.3lf, _y : %.3lf, _z : %.3lf \n ", temp_grasp_transformed_pose.pose.position.x, temp_grasp_transformed_pose.pose.position.y, temp_grasp_transformed_pose.pose.position.z) ; 
+          Publish_visualized_marker(temp_grasp_transformed_pose);
+          y_left = temp_grasp_transformed_pose.pose.position.y;
+          grasp_transformed_pose =  temp_grasp_transformed_pose;
           handle_found = true;
           break;
         }
