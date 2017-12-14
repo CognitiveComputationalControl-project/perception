@@ -67,7 +67,7 @@ if __name__=="__main__":
 	Door.FSM.transitions["toClosed"]=Transition("Closed")
 	Door.FSM.SetState("Closed")
 
-	rospy.spin()
+	# rospy.spin()
 
 	for i in range(20):
 		startTime =clock()

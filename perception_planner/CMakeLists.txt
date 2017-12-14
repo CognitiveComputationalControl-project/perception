@@ -16,7 +16,9 @@ find_package(catkin REQUIRED COMPONENTS
   tf
 )
 
-find_package(Eigen3 REQUIRED)
+#find_package(Eigen3 REQUIRED)
+find_package(PkgConfig)
+pkg_search_module(Eigen3 REQUIRED eigen3)
 find_package(PCL 1.7 REQUIRED)
 find_package(handle_detector REQUIRED)
 

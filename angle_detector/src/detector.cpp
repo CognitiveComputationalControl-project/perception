@@ -76,14 +76,12 @@ void LaserCallback (const sensor_msgs::LaserScan::ConstPtr& msg);
 void LaserCallback (const sensor_msgs::LaserScan::ConstPtr& msg);
 
 
-
-
 int main(int argc, char **argv){
 
   ros::init(argc, argv, "angle_detector");
   ros::NodeHandle n;
 
-  ros::Publisher  angle_detector_pub = n.advertise <std_msgs::Float32>("angle_detector", 2);
+  ros::Publisher  angle_detector_pub = n.advertise <std_msgs::Float32>("angle_detector/angle", 2);
   ros::Publisher  AnglePoint_ref_pub=n.advertise <visualization_msgs::MarkerArray>("anglepoint_ref_markerarray", 2);
   ros::Publisher  AnglePoint_cur_pub=n.advertise <visualization_msgs::MarkerArray>("anglepoint_cur_markerarray", 2);
 
@@ -99,7 +97,7 @@ int main(int argc, char **argv){
   geometry_msgs::PoseArray msgx;
 
   ros::Rate loop_rate(50);
-  std_msgs::Float32 angle;
+  std_msgs::Float32 angle_msg;
 
   bool door_first_found = false;
   int index = 1;
@@ -202,8 +200,7 @@ int main(int argc, char **argv){
        pcl::toROSMsg(*final_open, PCLD2);
        pub.publish(PCLD2);
 
-
-       
+     
 
        open_door_vec.resize(2);
        open_door_vec[0]=laser_x[dimcloud-1]-laser_x[1];
@@ -256,7 +253,7 @@ int main(int argc, char **argv){
        //ROS_INFO("point 2 : %lf, %lf \n", laser_x[dimcloud-1],laser_y[dimcloud-1]);
        //ROS_INFO("open door vector is : %f, %f \n", open_door_vec[0],open_door_vec[1]);
 
-      //angle_detector_pub.publish( angle );
+      
        double dot=0.0;
        double det=0.0;
        double angle=0.0;
@@ -265,7 +262,11 @@ int main(int argc, char **argv){
        dot = closed_door_vec[0]*open_door_vec[0] + closed_door_vec[1]*open_door_vec[1];
        det = closed_door_vec[0]*open_door_vec[1] - closed_door_vec[1]*open_door_vec[0];
        angle = static_cast<double> (atan2(det, dot)*360/(2*(3.141592)) );
-       printf("the angle is : %.3lf \n",angle);
+
+       angle_msg.data=angle;
+       angle_detector_pub.publish(angle_msg);
+
+       // printf("the angle is : %.3lf \n",angle);
     }
 
     AnglePoint_cur_pub.publish(cur_markerarray);

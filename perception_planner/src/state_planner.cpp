@@ -8,7 +8,6 @@ state_planner::state_planner()
 }
 
 
-
 void state_planner::update_state()
 {
     

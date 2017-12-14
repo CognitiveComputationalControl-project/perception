@@ -60,6 +60,7 @@ class Char(object):
 		self.FSM=SimpleFSM(self)
 		self.FullOpen = True
 
+
 Door = Char()
 Door.FSM.states["Open"]=Open()
 Door.FSM.states["Closed"]=Closed()
@@ -70,11 +71,9 @@ Door.FSM.transitions["toClosed"]=Transition("Closed")
 Door.FSM.transitions["toNothing"]=Transition("Nothing")
 Door.FSM.SetState("Closed")
 
-
 startTime=0
 CurTime=0
 state_active=False
-
 
 Cur_flag= Flag()
 
@@ -82,6 +81,7 @@ def door_state_callback(msg):
 	# print msg.state
 	global startTime
 
+	# measuring time from the activation timing
 	if (Cur_flag.init_start):
 		startTime=rospy.Time.now().secs
 		Cur_flag.init_start=False
@@ -90,12 +90,13 @@ def door_state_callback(msg):
 		time_diff=cur_time-startTime
 		print time_diff
 	
-	# # if()
+	# change the active mode if time pass 10 seconds
 	if (time_diff>10):
 		Cur_flag.state_active=True
 	else:
 		pass
 
+	# Finite State Machine
 	if(Cur_flag.state_active):
 		if(msg.state==1):
 			print "Dor is closed"

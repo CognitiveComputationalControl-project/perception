@@ -43,6 +43,7 @@ int main(int argc, char **argv)
   ros::NodeHandle n;
   // object_tracker.handletarget_pub=n.advertise<visualization_msgs::Marker>("/detected_final_handle_marker",50,true);
   // object_tracker.grasp_pub = n.advertise<geometry_msgs::PoseStamped> ("handle_detector/grasp_point", 10,true);
+  //
  
   ros::Rate loop_rate(10);
 

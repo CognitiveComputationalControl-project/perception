@@ -17,6 +17,7 @@ ALIGNMENT_RUNS	handle_detector/include/handle_detector/affordances.h	/^		static 
 ALIGNMENT_RUNS	handle_detector/src/affordances.cpp	/^const int Affordances::ALIGNMENT_RUNS = 3;$/;"	m	class:Affordances	file:
 Affordances	handle_detector/include/handle_detector/affordances.h	/^class Affordances$/;"	c
 BASE_FRAME	handle_detector/src/localization.cpp	/^const std::string BASE_FRAME = "base_link";$/;"	v
+BASE_FRAME	handle_tracking/include/object_scan.h	85;"	d
 CURVATURE_ESTIMATOR	handle_detector/include/handle_detector/affordances.h	/^		static const int CURVATURE_ESTIMATOR; \/\/ curvature axis estimation method$/;"	m	class:Affordances
 CURVATURE_ESTIMATOR	handle_detector/src/affordances.cpp	/^const int Affordances::CURVATURE_ESTIMATOR = 0;$/;"	m	class:Affordances	file:
 CURVATURE_ESTIMATORS	handle_detector/src/affordances.cpp	/^const std::string CURVATURE_ESTIMATORS[] = {"Taubin", "PCA", "Normals"};$/;"	v
@@ -72,6 +73,8 @@ LASER_Data_Length	handle_tracking/include/object_scan.h	54;"	d
 LASER_Dist_person	handle_tracking/include/object_scan.h	56;"	d
 LASER_Point_Step	handle_tracking/include/object_scan.h	55;"	d
 LaserCallback	angle_detector/src/detector.cpp	/^void LaserCallback (const sensor_msgs::LaserScan::ConstPtr& msg){$/;"	f
+MAP_FRAME	handle_tracking/include/object_scan.h	83;"	d
+MARKER_FRAME	handle_tracking/include/object_scan.h	/^    std::string MARKER_FRAME;$/;"	m	class:Handle_manager
 MARKER_FRAME	object_registration/src/interest_box_marker.cpp	21;"	d	file:
 MARKER_NAME	object_registration/src/interest_box_marker.cpp	22;"	d	file:
 MATH_PI	handle_tracking/include/object_scan.h	42;"	d
@@ -144,6 +147,7 @@ RADIUS_ERROR	handle_detector/include/handle_detector/affordances.h	/^		static co
 RADIUS_ERROR	handle_detector/src/affordances.cpp	/^const double Affordances::RADIUS_ERROR = 0.013;$/;"	m	class:Affordances	file:
 RANGE_SENSOR_FRAME	handle_detector/src/importance_sampling.cpp	/^const std::string RANGE_SENSOR_FRAME = "\/camera_rgb_optical_frame";$/;"	v
 RANGE_SENSOR_FRAME	handle_detector/src/localization.cpp	/^const std::string RANGE_SENSOR_FRAME = "head_rgbd_sensor_rgb_frame";$/;"	v
+RANGE_SENSOR_FRAME	handle_tracking/include/object_scan.h	84;"	d
 RANGE_SENSOR_TOPIC	handle_detector/src/importance_sampling.cpp	/^const std::string RANGE_SENSOR_TOPIC = "\/camera\/depth_registered\/points";$/;"	v
 RANGE_SENSOR_TOPIC	handle_detector/src/localization.cpp	/^const std::string RANGE_SENSOR_TOPIC = "\/hsrb\/head_rgbd_sensor\/depth_registered\/rectified_points";$/;"	v
 RanSac	angle_detector/src/detector.cpp	/^void RanSac(pcl::PointCloud<pcl::PointXYZ>::Ptr final){$/;"	f
@@ -523,8 +527,8 @@ window	ros-keyboard/src/keyboard.h	/^      SDL_Surface* window;$/;"	m	class:keyb
 workspaceFilter	handle_detector/src/affordances.cpp	/^PointCloud::Ptr Affordances::workspaceFilter(const PointCloud::Ptr &cloud_in, tf::StampedTransform *transform)$/;"	f	class:Affordances
 workspaceFilter	handle_detector/src/affordances.cpp	/^PointCloudRGB::Ptr Affordances::workspaceFilter(const PointCloudRGB::Ptr &cloud_in, tf::StampedTransform *transform)$/;"	f	class:Affordances
 workspace_limits	handle_detector/include/handle_detector/affordances.h	/^		WorkspaceLimits workspace_limits;$/;"	m	class:Affordances
-x_left	handle_tracking/include/object_scan.h	/^	double x_left;$/;"	m	class:Handle_manager
 x_max	handle_detector/src/localization.cpp	/^double x_max = 10000;$/;"	v
+y_left	handle_tracking/include/object_scan.h	/^	double y_left;$/;"	m	class:Handle_manager
 ~DoorHandleDetectionNode	door_handle_detection/src/door_handle_detection.cpp	/^DoorHandleDetectionNode::~DoorHandleDetectionNode()$/;"	f	class:DoorHandleDetectionNode
 ~Handle_manager	handle_tracking/src/object_scan.cpp	/^Handle_manager::~Handle_manager(){}$/;"	f	class:Handle_manager
 ~Keyboard	ros-keyboard/src/keyboard.cpp	/^keyboard::Keyboard::~Keyboard(void)$/;"	f	class:keyboard::Keyboard

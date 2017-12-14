@@ -20,7 +20,9 @@ find_package(catkin REQUIRED COMPONENTS
 find_package(LAPACK REQUIRED)
 
 ## find Eigen package
-find_package(Eigen3 REQUIRED)
+#find_package(Eigen3 REQUIRED)
+find_package(PkgConfig)
+pkg_search_module(Eigen3 REQUIRED eigen3)
 include_directories(${Eigen_INCLUDE_DIRS})
 
 ## compiler optimization flags
