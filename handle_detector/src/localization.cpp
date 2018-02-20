@@ -80,7 +80,7 @@ bool localize(handle_detector::localize_handle::Request  &req, handle_detector::
   pcl::fromROSMsg(req.pointcloud_data, *cloud);
   // organize point cloud for Organized Nearest Neighbors Search
   g_cloud->width = 640;
-  g_cloud->height = 480;11
+  g_cloud->height = 480;
   g_cloud->points.resize(g_cloud->width * g_cloud->height);
   for (int i = 0; i < g_cloud->height; i++)
   {
