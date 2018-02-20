@@ -1,5 +1,0 @@
-<launch>
-   <!-- <node name="human_cluster_node_yolo" pkg="villa_3d_object_extract" type="human_tmc_cluster_based_yolo_3D_extractor" respawn="false" output="screen"/> -->
-
-  
-</launch>

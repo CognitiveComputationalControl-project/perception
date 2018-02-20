@@ -78,7 +78,7 @@ void Handle_manager::Publish_visualized_marker(const geometry_msgs::PoseStamped 
     visual_marker.pose.orientation.z = 0.0;
     visual_marker.pose.orientation.w = 1.0;
 
-    double temp_dist=0.050;
+    double temp_dist=0.070;
 
     //ROS_INFO("temp dist : %.3lf, temp dist2 : %.3lf, temp dist3 : %.3lf",temp_dist,temp_dist2,temp_dist3);
     visual_marker.scale.x = std::abs(temp_dist);
@@ -110,7 +110,7 @@ void Handle_manager::marker_sorting(const visualization_msgs::MarkerArray msg)
     tf::StampedTransform transform_sensor_base;
     listener.waitForTransform(RANGE_SENSOR_FRAME,MAP_FRAME,  ros::Time(0), ros::Duration(3.0));
     int ite = 0;
-    while (ros::ok() && ite < 20)
+    while (ros::ok() && ite < 6)
     {
       try
       { 
@@ -119,6 +119,9 @@ void Handle_manager::marker_sorting(const visualization_msgs::MarkerArray msg)
         listener.transformPose (MAP_FRAME, grasp_pose,  temp_grasp_transformed_pose) ;
         temp_grasp_transformed_pose.header.stamp=ros::Time::now();
         temp_grasp_transformed_pose.header.frame_id=MAP_FRAME;
+/*          ROS_INFO("%d is the temp_grasp_transformed_pose.pose.position.y", temp_grasp_transformed_pose.pose.position.y);
+          ROS_INFO("%d is the temp_grasp_transformed_pose.pose.position.z", temp_grasp_transformed_pose.pose.position.z);*/
+
         if ( (y_left < temp_grasp_transformed_pose.pose.position.y) && (fabs(temp_grasp_transformed_pose.pose.position.z-0.93)<0.02) )
         { 
           ROS_INFO("_x : %.3lf, _y : %.3lf, _z : %.3lf \n ", temp_grasp_transformed_pose.pose.position.x, temp_grasp_transformed_pose.pose.position.y, temp_grasp_transformed_pose.pose.position.z) ; 

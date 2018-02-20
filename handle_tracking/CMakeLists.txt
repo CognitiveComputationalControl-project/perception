@@ -16,6 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
   tf
   pcl_ros
   pcl_conversions
+  handle_detector
 )
 
 #find_package(Eigen3 REQUIRED)

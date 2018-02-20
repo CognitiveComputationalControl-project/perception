@@ -71,6 +71,8 @@ bool localize(handle_detector::localize_handle::Request  &req, handle_detector::
     catch (tf::TransformException &ex){
     }
   }    
+
+  ///////////checkit
   Visualizer visualizer(g_update_interval);
   std::vector<visualization_msgs::MarkerArray> marker_arrays;
   visualization_msgs::MarkerArray marker_array_msg_handles;
@@ -78,7 +80,7 @@ bool localize(handle_detector::localize_handle::Request  &req, handle_detector::
   pcl::fromROSMsg(req.pointcloud_data, *cloud);
   // organize point cloud for Organized Nearest Neighbors Search
   g_cloud->width = 640;
-  g_cloud->height = 480;
+  g_cloud->height = 480;11
   g_cloud->points.resize(g_cloud->width * g_cloud->height);
   for (int i = 0; i < g_cloud->height; i++)
   {
@@ -87,12 +89,17 @@ bool localize(handle_detector::localize_handle::Request  &req, handle_detector::
       g_cloud->points[i * g_cloud->width + j] = cloud->points[i * g_cloud->width + j];
     }
   }
+  ///////////
   // search grasp affordances
   g_cylindrical_shells = g_affordances.searchAffordances(g_cloud, &g_transform);
   // search handles
   g_handles = g_affordances.searchHandles(g_cloud, g_cylindrical_shells);
   visualizer.createHandles(g_handles, RANGE_SENSOR_FRAME, marker_arrays, marker_array_msg_handles);
-
+  for (int i =0 ; i< marker_array_msg_handles.markers.size();i++)
+{  ROS_INFO("%d value for marker on x ",marker_array_msg_handles.markers[i].pose.position.x);
+ROS_INFO("%d value for marker on y ",marker_array_msg_handles.markers[i].pose.position.y);
+ROS_INFO("%d value for marker on z ",marker_array_msg_handles.markers[i].pose.position.z);
+}
   res.handle_marker = marker_array_msg_handles;
   return true;
 
