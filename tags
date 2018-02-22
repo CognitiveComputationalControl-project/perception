@@ -107,11 +107,9 @@ PointCloudRGB	handle_detector/include/handle_detector/sampling.h	/^typedef pcl::
 PointCloudRGB	handle_detector/include/handle_detector/sampling_visualizer.h	/^typedef pcl::PointCloud<pcl::PointXYZRGB> PointCloudRGB;$/;"	t
 PointCloudRGB	handle_detector/src/importance_sampling.cpp	/^typedef pcl::PointCloud<pcl::PointXYZRGB> PointCloudRGB;$/;"	t	file:
 PointCloudRGB	object_registration/src/interest_box_marker.cpp	/^typedef pcl::PointCloud<PointRGB> PointCloudRGB;$/;"	t	file:
-PointCloudT	door_recognition/src/findit.cpp	/^typedef pcl::PointCloud<PointNT> PointCloudT;$/;"	t	file:
 PointCloudT	object_registration/src/object_localize_service.cpp	/^typedef pcl::PointCloud<PointNT> PointCloudT;$/;"	t	file:
 PointCloudT	object_registration/test/test_object_localize_service.cpp	/^typedef pcl::PointCloud<PointNT> PointCloudT;$/;"	t	file:
 PointCurvatureTaubin	handle_detector/include/handle_detector/curvature_estimation_taubin.h	/^struct PointCurvatureTaubin$/;"	s	namespace:pcl
-PointNT	door_recognition/src/findit.cpp	/^typedef pcl::PointXYZRGB PointNT;$/;"	t	file:
 PointNT	object_registration/src/object_localize_service.cpp	/^typedef pcl::PointNormal PointNT;$/;"	t	file:
 PointNT	object_registration/test/test_object_localize_service.cpp	/^typedef pcl::PointXYZRGB PointNT;$/;"	t	file:
 PointRGB	object_registration/src/interest_box_marker.cpp	/^typedef pcl::PointXYZRGB PointRGB;$/;"	t	file:
@@ -154,7 +152,6 @@ WorkspaceLimits	handle_detector/include/handle_detector/affordances.h	/^struct W
 X_SIZE_ARROW_1	object_registration/src/interest_box_marker.cpp	30;"	d	file:
 Y_SIZE_ARROW_1	object_registration/src/interest_box_marker.cpp	31;"	d	file:
 Z_SIZE_ARROW_1	object_registration/src/interest_box_marker.cpp	32;"	d	file:
-a	door_recognition/src/findit.cpp	/^int a=0;$/;"	v
 addCylinders	handle_detector/src/sampling_visualizer.cpp	/^void SamplingVisualizer::addCylinders(const std::vector<CylindricalShell> &shells, void* viewer_void,$/;"	f	class:SamplingVisualizer
 affordances	handle_detector/include/handle_detector/sampling.h	/^  Affordances affordances;$/;"	m	class:Sampling
 alignment_dist_radius	handle_detector/include/handle_detector/affordances.h	/^		double alignment_dist_radius;$/;"	m	class:Affordances
@@ -166,7 +163,6 @@ call_localize_object_service	object_registration/test/test_object_localize_servi
 centroid	handle_detector/include/handle_detector/cylindrical_shell.h	/^  Eigen::Vector3d centroid;$/;"	m	class:CylindricalShell
 chatterCallback	handle_detector/src/importance_sampling.cpp	/^void chatterCallback(const sensor_msgs::PointCloud2ConstPtr& input)$/;"	f
 client	handle_tracking/include/object_scan.h	/^	ros::ServiceClient client;$/;"	m	class:Handle_manager
-cloud_callback	door_recognition/src/findit.cpp	/^void cloud_callback(const sensor_msgs::PointCloud2ConstPtr &msg){$/;"	f
 cloud_callback	handle_tracking/src/object_scan.cpp	/^void Handle_manager::cloud_callback(const sensor_msgs::PointCloud2ConstPtr& input)$/;"	f	class:Handle_manager
 cloud_callback	object_registration/src/interest_box_marker.cpp	/^void cloud_callback(const sensor_msgs::PointCloud2::ConstPtr& msg){$/;"	f
 cloud_mutex	object_registration/src/interest_box_marker.cpp	/^boost::mutex cloud_mutex;$/;"	v
@@ -195,9 +191,6 @@ curvature_centroid_y	handle_detector/include/handle_detector/curvature_estimatio
 curvature_centroid_z	handle_detector/include/handle_detector/curvature_estimation_taubin.h	/^      float curvature_centroid_z;$/;"	m	struct:pcl::PointCurvatureTaubin::__anon5::__anon6
 curvature_estimator	handle_detector/include/handle_detector/affordances.h	/^		int curvature_estimator;$/;"	m	class:Affordances
 dimcloud	angle_detector/src/detector.cpp	/^int dimcloud=0;$/;"	v
-door_detector_client	door_recognition/src/findit.cpp	/^ros::ServiceClient door_detector_client;$/;"	v
-door_in_baselink_cloud_pub	door_recognition/src/findit.cpp	/^    ros::Publisher door_in_baselink_cloud_pub;$/;"	v
-door_in_head_cloud_pub	door_recognition/src/findit.cpp	/^    ros::Publisher door_in_head_cloud_pub;$/;"	v
 door_start	angle_detector/src/detector.cpp	/^int door_start;$/;"	v
 estimateCurvatureAxisNormals	handle_detector/src/affordances.cpp	/^void Affordances::estimateCurvatureAxisNormals(const pcl::PointCloud<pcl::Normal>::Ptr &cloud_normals,$/;"	f	class:Affordances
 estimateCurvatureAxisPCA	handle_detector/src/affordances.cpp	/^void Affordances::estimateCurvatureAxisPCA(const PointCloud::Ptr &cloud, int nn_center_idx, std::vector<int> nn_indices,$/;"	f	class:Affordances
@@ -244,7 +237,6 @@ grasp_pub	handle_tracking/include/object_scan.h	/^	ros::Publisher grasp_pub;$/;"
 grasp_transformed_pose	handle_tracking/include/object_scan.h	/^	geometry_msgs::PoseStamped grasp_transformed_pose;$/;"	m	class:Handle_manager
 handle_found	handle_tracking/include/object_scan.h	/^	bool handle_found = false;$/;"	m	class:Handle_manager
 handle_gap	handle_detector/include/handle_detector/affordances.h	/^		double handle_gap;$/;"	m	class:Affordances
-handle_pub	door_recognition/src/findit.cpp	/^    ros::Publisher handle_pub;$/;"	v
 handlemiddletarget_pub	handle_tracking/include/object_scan.h	/^    ros::Publisher handlemiddletarget_pub;$/;"	m	class:Handle_manager
 handletarget_pub	handle_tracking/include/object_scan.h	/^    ros::Publisher handletarget_pub;$/;"	m	class:Handle_manager
 hasClearance	handle_detector/src/cylindrical_shell.cpp	/^bool CylindricalShell::hasClearance(const PointCloud::Ptr &cloud, const std::vector<int>& nn_indices,$/;"	f	class:CylindricalShell
@@ -267,7 +259,6 @@ loadStoredCloud	object_registration/src/interest_box_marker.cpp	/^bool loadStore
 localize	handle_detector/src/localization.cpp	/^bool localize(handle_detector::localize_handle::Request  &req, handle_detector::localize_handle::Response &res)$/;"	f
 localize_service	object_registration/src/object_localize_service.cpp	/^bool localize_service(object_registration::ObjectLocalize::Request  &req,$/;"	f
 main	angle_detector/src/detector.cpp	/^int main(int argc, char **argv){$/;"	f
-main	door_recognition/src/findit.cpp	/^int main (int argc, char** argv)$/;"	f
 main	handle_detector/src/importance_sampling.cpp	/^int main(int argc, char** argv)$/;"	f
 main	handle_detector/src/localization.cpp	/^int main(int argc, char** argv)$/;"	f
 main	handle_tracking/src/scanning_test.cpp	/^int main(int argc, char **argv)$/;"	f
@@ -288,7 +279,6 @@ method	handle_detector/include/handle_detector/sampling.h	/^  int method;$/;"	m	
 min_x	handle_detector/include/handle_detector/affordances.h	/^	double min_x;$/;"	m	struct:WorkspaceLimits
 min_y	handle_detector/include/handle_detector/affordances.h	/^	double min_y;$/;"	m	struct:WorkspaceLimits
 min_z	handle_detector/include/handle_detector/affordances.h	/^	double min_z;$/;"	m	struct:WorkspaceLimits
-move_to_frame	door_recognition/src/findit.cpp	/^void move_to_frame(const PointCloudT::Ptr &input, const std::string &target_frame, PointCloudT::Ptr &output) {$/;"	f
 msg	handle_detector/src/localization.cpp	/^static geometry_msgs::Pose msg;$/;"	v	file:
 msg_trans	handle_detector/src/localization.cpp	/^geometry_msgs::Pose msg_trans;$/;"	v
 msg_x	handle_detector/src/localization.cpp	/^double msg_x=0.0;$/;"	v
@@ -314,20 +304,13 @@ num_threads	handle_detector/include/handle_detector/affordances.h	/^		int num_th
 num_threads_	handle_detector/include/handle_detector/curvature_estimation_taubin.h	/^  unsigned int num_threads_; \/\/ number of threads for parallelization$/;"	m	class:pcl::CurvatureEstimationTaubin
 object_cloud_msg	object_registration/test/test_object_localize_service.cpp	/^sensor_msgs::PointCloud2 object_cloud_msg;$/;"	v
 object_localize	object_registration/src/object_localize_service.cpp	/^bool object_localize(const PointCloudT::Ptr& object_in, const PointCloudT::Ptr& scene_in, geometry_msgs::Pose& relative_pose){$/;"	f
-object_localize_client	door_recognition/src/findit.cpp	/^ros::ServiceClient object_localize_client;$/;"	v
 object_localize_client	object_registration/test/test_object_localize_service.cpp	/^ros::ServiceClient      object_localize_client;$/;"	v
-object_trans_cloud_pub	door_recognition/src/findit.cpp	/^    ros::Publisher object_trans_cloud_pub;$/;"	v
-object_transformed_cloud_msg	door_recognition/src/findit.cpp	/^sensor_msgs::PointCloud2 object_transformed_cloud_msg;    $/;"	v
 object_transformed_cloud_msg	object_registration/test/test_object_localize_service.cpp	/^sensor_msgs::PointCloud2 object_transformed_cloud_msg;    $/;"	v
 pcl	handle_detector/include/handle_detector/curvature_estimation_taubin.h	/^namespace pcl$/;"	n
 pointcloud_pub	object_registration/src/interest_box_marker.cpp	/^ros::Publisher  pointcloud_pub;$/;"	v
 prob_rand_samples	handle_detector/include/handle_detector/sampling.h	/^  double prob_rand_samples;$/;"	m	class:Sampling
 processFeedback	object_registration/src/interest_box_marker.cpp	/^void processFeedback(const visualization_msgs::InteractiveMarkerFeedbackConstPtr &feedback){$/;"	f
 processFeedbackArrow	object_registration/src/interest_box_marker.cpp	/^void processFeedbackArrow(const visualization_msgs::InteractiveMarkerFeedbackConstPtr &feedback){$/;"	f
-qw	door_recognition/src/findit.cpp	/^double qw;$/;"	v
-qx	door_recognition/src/findit.cpp	/^double qx;$/;"	v
-qy	door_recognition/src/findit.cpp	/^double qy;$/;"	v
-qz	door_recognition/src/findit.cpp	/^double qz;$/;"	v
 radius	handle_detector/include/handle_detector/cylindrical_shell.h	/^  double radius;$/;"	m	class:CylindricalShell
 radius_error	handle_detector/include/handle_detector/affordances.h	/^		double radius_error;$/;"	m	class:Affordances
 run_icp_on_pc	object_registration/src/object_localize_service.cpp	/^void run_icp_on_pc(const PointCloudT::Ptr& cloud_in, $/;"	f
@@ -352,7 +335,6 @@ sig_handler	object_registration/src/interest_box_marker.cpp	/^void sig_handler(i
 sign	handle_detector/include/handle_detector/curvature_estimation_taubin.h	/^  inline int sign(double x)$/;"	f	class:pcl::CurvatureEstimationTaubin
 simpleVis	angle_detector/src/detector.cpp	/^simpleVis (pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud)$/;"	f
 solveGeneralizedEigenProblem	handle_detector/include/handle_detector/curvature_estimation_taubin.h	/^  inline bool solveGeneralizedEigenProblem(const Eigen::MatrixXd& A, const Eigen::MatrixXd& B, Eigen::MatrixXd& v,$/;"	f	class:pcl::CurvatureEstimationTaubin
-srv	door_recognition/src/findit.cpp	/^door_recognition::ObjectLocalize srv; $/;"	v
 srv	handle_tracking/include/object_scan.h	/^	handle_detector::localize_handle srv;$/;"	m	class:Handle_manager
 srv_find	handle_tracking/include/object_scan.h	/^	handle_tracking::objectfinder srv_find;$/;"	m	class:Handle_manager
 storeCloudInfo	object_registration/src/interest_box_marker.cpp	/^bool storeCloudInfo(){$/;"	f
@@ -362,14 +344,10 @@ sub	handle_tracking/include/object_scan.h	/^	ros::Subscriber sub;$/;"	m	class:Ha
 target_radius	handle_detector/include/handle_detector/affordances.h	/^		double target_radius;$/;"	m	class:Affordances
 temp_grasp_transformed_pose	handle_tracking/include/object_scan.h	/^	geometry_msgs::PoseStamped temp_grasp_transformed_pose;$/;"	m	class:Handle_manager
 test_service_call	object_registration/test/test_object_localize_service.cpp	/^void test_service_call(){$/;"	f
-tf_listener	door_recognition/src/findit.cpp	/^tf::TransformListener *tf_listener;$/;"	v
 tf_listener	object_registration/src/interest_box_marker.cpp	/^tf::TransformListener *tf_listener;$/;"	v
 time_curvature	handle_detector/include/handle_detector/curvature_estimation_taubin.h	/^  double time_curvature;$/;"	m	class:pcl::CurvatureEstimationTaubin
 time_taubin	handle_detector/include/handle_detector/curvature_estimation_taubin.h	/^  double time_taubin;$/;"	m	class:pcl::CurvatureEstimationTaubin
 track_handle	handle_tracking/src/object_scan.cpp	/^bool Handle_manager::track_handle(handle_tracking::objectfinder::Request  &req,$/;"	f	class:Handle_manager
-tx	door_recognition/src/findit.cpp	/^double tx;$/;"	v
-ty	door_recognition/src/findit.cpp	/^double ty;$/;"	v
-tz	door_recognition/src/findit.cpp	/^double tz;$/;"	v
 unpackQuadric	handle_detector/include/handle_detector/curvature_estimation_taubin.h	/^  inline void unpackQuadric(const Eigen::VectorXd &quadric_parameters, Eigen::Vector3d &quadric_centroid,$/;"	f	class:pcl::CurvatureEstimationTaubin
 updateArrowLocations	object_registration/src/interest_box_marker.cpp	/^void updateArrowLocations(const geometry_msgs::Pose box_pose, $/;"	f
 use_clearance_filter	handle_detector/include/handle_detector/affordances.h	/^		bool use_clearance_filter;$/;"	m	class:Affordances

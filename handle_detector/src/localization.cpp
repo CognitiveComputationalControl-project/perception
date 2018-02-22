@@ -95,11 +95,12 @@ bool localize(handle_detector::localize_handle::Request  &req, handle_detector::
   // search handles
   g_handles = g_affordances.searchHandles(g_cloud, g_cylindrical_shells);
   visualizer.createHandles(g_handles, RANGE_SENSOR_FRAME, marker_arrays, marker_array_msg_handles);
-  for (int i =0 ; i< marker_array_msg_handles.markers.size();i++)
-{  ROS_INFO("%d value for marker on x ",marker_array_msg_handles.markers[i].pose.position.x);
-ROS_INFO("%d value for marker on y ",marker_array_msg_handles.markers[i].pose.position.y);
-ROS_INFO("%d value for marker on z ",marker_array_msg_handles.markers[i].pose.position.z);
-}
+  //for (int i =0 ; i< marker_array_msg_handles.markers.size();i++)
+//{ 
+    //ROS_INFO("%d value for marker on x ",marker_array_msg_handles.markers[i].pose.position.x);
+//ROS_INFO("%d value for marker on y ",marker_array_msg_handles.markers[i].pose.position.y);
+//ROS_INFO("%d value for marker on z ",marker_array_msg_handles.markers[i].pose.position.z);
+//}
   res.handle_marker = marker_array_msg_handles;
   return true;
 

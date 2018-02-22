@@ -25,7 +25,7 @@ handle_tracking::objectfinder::Response &res)
   int found = 0;
   while (ros::ok())
   {
-  if (found > 10){
+  if (found > 2){
     ROS_INFO("breaking");
     break;
   }
@@ -110,7 +110,7 @@ void Handle_manager::marker_sorting(const visualization_msgs::MarkerArray msg)
     tf::StampedTransform transform_sensor_base;
     listener.waitForTransform(RANGE_SENSOR_FRAME,MAP_FRAME,  ros::Time(0), ros::Duration(3.0));
     int ite = 0;
-    while (ros::ok() && ite < 6)
+    while (ros::ok() && ite < 5)
     {
       try
       { 
