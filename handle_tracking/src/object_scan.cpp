@@ -114,13 +114,14 @@ void Handle_manager::marker_sorting(const visualization_msgs::MarkerArray msg)
     {
       try
       { 
+
         listener.lookupTransform(RANGE_SENSOR_FRAME,MAP_FRAME, ros::Time(0), transform_sensor_base);
-//        listener.transformPose (MAP_FRAME, grasp_pose,  grasp_transformed_pose) ; 
+        //listener.transformPose(MAP_FRAME, grasp_pose,  grasp_transformed_pose);
         listener.transformPose (MAP_FRAME, grasp_pose,  temp_grasp_transformed_pose) ;
         temp_grasp_transformed_pose.header.stamp=ros::Time::now();
         temp_grasp_transformed_pose.header.frame_id=MAP_FRAME;
-/*          ROS_INFO("%d is the temp_grasp_transformed_pose.pose.position.y", temp_grasp_transformed_pose.pose.position.y);
-          ROS_INFO("%d is the temp_grasp_transformed_pose.pose.position.z", temp_grasp_transformed_pose.pose.position.z);*/
+        /*          ROS_INFO("%d is the temp_grasp_transformed_pose.pose.position.y", temp_grasp_transformed_pose.pose.position.y);
+                    ROS_INFO("%d is the temp_grasp_transformed_pose.pose.position.z", temp_grasp_transformed_pose.pose.position.z);*/
 
         if ( (y_left < temp_grasp_transformed_pose.pose.position.y) && (fabs(temp_grasp_transformed_pose.pose.position.z-0.93)<0.02) )
         { 

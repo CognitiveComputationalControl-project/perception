@@ -32,6 +32,11 @@
 		<param name="num_threads" value="2" />
 	</node>
 
-    <node pkg="villa_navi_service" type="nav_service_test" name="villa_nav_srv_node" output="screen"/>
+    <node pkg="villa_navi_service" type="nav_service_test" name="villa_nav_srv_node" output="screen">
+
+	<param name="door_location_x" value="4.29" />
+	<param name="door_location_y" value="1.17" />
+
+	</node>
     <node pkg="handle_tracking" type="scanner" name="handle_tracker_node" output="screen"/>
 </launch>
